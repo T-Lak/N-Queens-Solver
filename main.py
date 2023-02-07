@@ -14,7 +14,7 @@ def display(bitboard: str) -> None:
 
 
 def create_lookup_table(n: int) -> None:
-    n_x_n_mask = 2**(n * n) - 1  # to truncate bits added by left-shift
+    nxn_mask = 2**(n * n) - 1  # to truncate bits added by left-shift
 
     north_mask = create_north_mask(n)
     south_mask = create_south_mask(n)
@@ -37,22 +37,22 @@ def create_lookup_table(n: int) -> None:
         north_east_ray = north_east_mask  << square & ~masked_west_files(_file_idx, n)
         north_west_ray = north_west_mask  << square & masked_west_files(_file_idx, n)
         south_east_ray = (south_east_mask >> (n ** 2 - 1 - square)) & ~masked_west_files(_file_idx, n)
-        south_west_ray = south_west_mask >> (n ** 2 - 1 - square) & masked_west_files(_file_idx, n)
+        south_west_ray = south_west_mask  >> (n ** 2 - 1 - square) & masked_west_files(_file_idx, n)
 
-        attack_bitboard = (north_ray & n_x_n_mask) | \
-                          (north_east_ray & n_x_n_mask) | \
-                          (east_ray & n_x_n_mask) | \
-                          (south_east_ray & n_x_n_mask) | \
-                          (south_ray & n_x_n_mask) | \
-                          (south_west_ray & n_x_n_mask) | \
-                          (west_ray & n_x_n_mask) | \
-                          (north_west_ray & n_x_n_mask)
+        attack_bitboard = north_ray | \
+                          north_east_ray | \
+                          east_ray | \
+                          south_east_ray | \
+                          south_ray | \
+                          south_west_ray | \
+                          west_ray | \
+                          north_west_ray
 
-        ATTACK_LUT.append(attack_bitboard)
+        ATTACK_LUT.append(attack_bitboard & nxn_mask)
 
 
 if __name__ == '__main__':
-    size = 17
+    size = 4
     create_lookup_table(size)
     for i in range(size**2):
         display(to_binary_string(size, ATTACK_LUT[i]))
