@@ -26,26 +26,33 @@ def create_lookup_table(_size: int) -> None:
     south_east_mask = create_south_east_mask(_size) << (_size - 1)
     south_west_mask = create_south_west_mask(_size)
 
-    for square in range(_size ** 2):
+    for square in range(_size**2):
         _file_idx = file_idx(square, _size)
 
-        north = (north_mask << square) & n_bits
-        south = (south_mask >> ((_size ** 2 - 1) - square)) & n_bits
-        east  = ((east_mask << square) & ~masked_west_files(_file_idx, _size)) & n_bits
-        west  = ((west_mask >> ((_size ** 2 - 1) - square)) & masked_west_files(_file_idx, _size)) & n_bits
+        north_ray = north_mask << square
+        south_ray = south_mask >> ((_size ** 2 - 1) - square)
+        east_ray  = (east_mask << square) & ~masked_west_files(_file_idx, _size)
+        west_ray  = (west_mask >> ((_size ** 2 - 1) - square)) & masked_west_files(_file_idx, _size)
 
-        north_east = (north_east_mask  << square & ~masked_west_files(_file_idx, _size)) & n_bits
-        north_west = (north_west_mask  << square & masked_west_files(_file_idx, _size)) & n_bits
-        south_east = ((south_east_mask >> (_size**2 - 1 - square)) & ~masked_west_files(_file_idx, _size)) & n_bits
-        south_west = (south_west_mask  >> (size**2 - 1 - square) & masked_west_files(_file_idx, _size)) & n_bits
+        north_east_ray = north_east_mask  << square & ~masked_west_files(_file_idx, _size)
+        north_west_ray = north_west_mask  << square & masked_west_files(_file_idx, _size)
+        south_east_ray = (south_east_mask >> (_size**2 - 1 - square)) & ~masked_west_files(_file_idx, _size)
+        south_west_ray = south_west_mask  >> (_size**2 - 1 - square) & masked_west_files(_file_idx, _size)
 
-        attack_bitboard = north | north_east | east | south_east | south | south_west | west | north_west
+        attack_bitboard = (north_ray & n_bits) | \
+                          (north_east_ray & n_bits) | \
+                          (east_ray & n_bits) | \
+                          (south_east_ray & n_bits) | \
+                          (south_ray & n_bits) | \
+                          (south_west_ray & n_bits) | \
+                          (west_ray & n_bits) | \
+                          (north_west_ray & n_bits)
 
         ATTACK_LUT.append(attack_bitboard)
 
 
 if __name__ == '__main__':
-    size = 7
+    size = 17
     create_lookup_table(size)
     for i in range(size**2):
         display(to_binary_string(size, ATTACK_LUT[i]))
