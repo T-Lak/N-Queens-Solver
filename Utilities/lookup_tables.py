@@ -5,6 +5,11 @@ ATTACK_LUT = []
 
 
 def create_attack_lut(n: int) -> None:
+    """
+    Creates a lookup table containing all attacks a queen can perform from any given square.
+    :param n: board width
+    :return: None
+    """
     nxn_mask = 2**(n * n) - 1  # to truncate bits added by left-shift
 
     north_mask = create_north_mask(n)
