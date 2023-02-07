@@ -1,5 +1,17 @@
+from main import display
+
+
 def rotate_90_clockwise(x: int) -> int:
     return flip_vertical(flip_diagonal_h1h8(x))
+
+
+def rot(x: int, size: int) -> int:
+    if size > 8:
+        bb_1 = x & ((1 << (size**2 // 2)))
+        bb_2 = x >> (size**2 // 2)
+        return rotate_180(x)
+    if size == 8:
+        return rotate_180(x)
 
 
 def rotate_180(x: int) -> int:
@@ -8,13 +20,26 @@ def rotate_180(x: int) -> int:
     h4 = 0x0F0F0F0F0F0F0F0F
     v1 = 0x00FF00FF00FF00FF
     v2 = 0x0000FFFF0000FFFF
-
-    x = ((x >> 1) & h1) | ((x & h1) << 1)
-    x = ((x >> 2) & h2) | ((x & h2) << 2)
-    x = ((x >> 4) & h4) | ((x & h4) << 4)
-    x = ((x >> 8) & v1) | ((x & v1) << 8)
-    x = ((x >> 16) & v2) | ((x & v2) << 16)
-    x = (x >> 32) | (x << 32)
+    display(8, to_binary_string(8, x))
+    print()
+    x = ((x >> 1) & h1)  | ((x & h1) << 1)
+    display(8, to_binary_string(8, x))
+    print()
+    x = ((x >> 2) & h2)  | ((x & h2) << 2)
+    display(8, to_binary_string(8, x))
+    print()
+    x = ((x >> 5) & h4)  | ((x & h4) << 4)
+    display(8, to_binary_string(8, x))
+    print()
+    x = ((x >> 10) & v1)  | ((x & v1) << 16)
+    display(8, to_binary_string(8, x))
+    print()
+    x = ((x >> 20) & v2) | ((x & v2) << 32)
+    display(8, to_binary_string(8, x))
+    print()
+    x = (x >> 40) | (x << 40)
+    display(8, to_binary_string(8, x))
+    print()
 
     return x
 
@@ -31,9 +56,9 @@ def flip_vertical(x: int) -> int:
 
 
 def flip_diagonal_h1h8(x: int) -> int:
-    k1 = 0x5500550055005500
-    k2 = 0x3333000033330000
-    k4 = 0x0f0f0f0f00000000
+    k1 = 0x550055005500550055
+    k2 = 0x333300003333000033
+    k4 = 0x0f0f0f0f0f00000000
 
     t = k4 & (x ^ (x << 28))
     x ^= t ^ (t >> 28)
@@ -45,5 +70,15 @@ def flip_diagonal_h1h8(x: int) -> int:
     return x
 
 
-def to_binary_string(x: int) -> str:
-    return '{:064b}'.format(x)
+def to_binary_string(size: int, x: int) -> str:
+    binary_repr = f'{{:0{size**2}b}}'
+    return binary_repr.format(x)
+
+
+def rank_idx(square: int, size: int):
+    return square // size
+
+
+def file_idx(square: int, size: int):
+    return square % size
+

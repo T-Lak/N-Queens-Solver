@@ -1,76 +1,65 @@
 from textwrap import wrap
 
+from Utilities.bit_masks import *
 from Utilities.bit_operations import *
 
-NORTH_RAY = []
-SOUTH_RAY = []
-EAST_RAY  = []
-WEST_RAY  = []
 
-NORTH_CUT = []
-EAST_CUTb = []
-SOUTH_CUT = []
-WEST_CUT  = []
-
-NORTH_EAST_RAY = []
-SOUTH_WEST_RAY = []
-NORTH_WEST_RAY = []
-SOUTH_EAST_RAY = []
-
-CLEAR_RANK = [
-    0xFFFFFFFFFFFFFF00, 0xFFFFFFFFFFFF00FF, 0xFFFFFFFFFF00FFFF, 0xFFFFFFFF00FFFFFF,
-    0xFFFFFF00FFFFFFFF, 0xFFFF00FFFFFFFFFF, 0xFF00FFFFFFFFFFFF, 0x00FFFFFFFFFFFFFF,
-]
-
-CLEAR_FILE = [
-    0xFEFEFEFEFEFEFEFE, 0xFDFDFDFDFDFDFDFD, 0xFBFBFBFBFBFBFBFB, 0xF7F7F7F7F7F7F7F7,
-    0xEFEFEFEFEFEFEFEF, 0xDFDFDFDFDFDFDFDF, 0xBFBFBFBFBFBFBFBF, 0x7F7F7F7F7F7F7F7F,
-]
-
-MASK_RANK = [
-    0x00000000000000FF, 0x000000000000FF00, 0x0000000000FF0000, 0x00000000FF000000,
-    0x000000FF00000000, 0x0000FF0000000000, 0x00FF000000000000, 0xFF00000000000000,
-]
-
-MASK_FILE = [
-    0x0101010101010101, 0x0202020202020202, 0x0404040404040404, 0x0808080808080808,
-    0x1010101010101010, 0x2020202020202020, 0x4040404040404040, 0x8080808080808080,
-]
+ATTACK_LUT = []
 
 
-def display(bitboard: str) -> None:
-    print('\n'.join([' '.join(wrap(line[::-1], 1)) for line in wrap(bitboard, 8)]))
+def display(_size: int, bitboard: str) -> None:
+    print('\n'.join([' '.join(wrap(line[::-1], 1)) for line in wrap(bitboard, _size)]), '\n')
 
 
-def create_lookup_tables() -> None:
-    mask            = 0xFFFFFFFFFFFFFFFF
-    north_mask      = 0x0101010101010100
-    south_mask      = 0x0080808080808080
-    north_east_mask = 0x8040201008040200
-    north_west_mask = 0x0102040810204000
+def create_lookup_tables(_size: int) -> None:
+    north_mask = create_north_mask(_size)
+    south_mask = create_south_mask(_size)
+    east_mask  = create_east_mask(_size)
+    west_mask  = create_west_mask(_size)
 
-    for sq in range(64):
-        north_east = (north_east_mask & (mask >> 8 * (sq % 8))) << sq
-        north_west = (north_west_mask >> 7) << sq & rotate_90_clockwise((mask >> 8 * (7 - (sq & 7))))
+    north_east_mask = create_north_east_mask(_size)
+    north_west_mask = create_north_west_mask(_size) >> (_size - 1)
+    south_east_mask = create_south_east_mask(_size) << (_size - 1)
+    south_west_mask = create_south_west_mask(_size)
 
-        north = north_mask << sq
-        east  = 2 * ((1 << (sq | 7)) - (1 << sq))
-        south = south_mask >> (63 - sq)
-        west  = (1 << sq) - (1 << (sq & 56))
+    for square in range(_size ** 2):
+        _file_idx = file_idx(square, _size)
 
-        NORTH_RAY.append(to_binary_string(north)[-64:])
-        EAST_RAY.append(to_binary_string(east)[-64:])
-        SOUTH_RAY.append(to_binary_string(south)[:64])
-        WEST_RAY.append(to_binary_string(west)[-64])
+        north = north_mask << square
+        south = south_mask >> ((_size ** 2 - 1) - square)
+        east  = (east_mask << square) & ~masked_west_files(_file_idx, _size)
+        west  = (west_mask >> ((_size ** 2 - 1) - square)) & masked_west_files(_file_idx, _size)
 
-        NORTH_WEST_RAY.append(to_binary_string(north_west)[-64:])
-        NORTH_EAST_RAY.append(to_binary_string(north_east)[-64:])
-        SOUTH_EAST_RAY.insert(0, to_binary_string(rotate_180(north_west))[-64:])
-        SOUTH_WEST_RAY.insert(0, to_binary_string(rotate_180(north_east))[-64:])
+        north_east = north_east_mask << square & ~masked_west_files(_file_idx, _size)
+        north_west = north_west_mask << square & masked_west_files(_file_idx, _size)
+        south_east = (south_east_mask >> (_size**2 - 1 - square)) & ~masked_west_files(_file_idx, _size)
+        south_west = south_west_mask >> (size**2 - 1 - square) & masked_west_files(_file_idx, _size)
+
+        # formatting
+        formatted_north_mask = to_binary_string(_size, north)[-_size**2:]
+        formatted_south_mask = to_binary_string(_size, south)[:_size**2]
+        formatted_east_mask  = to_binary_string(_size, east)[-_size**2:]
+        formatted_west_mask  = to_binary_string(_size, west)[-_size**2:]
+
+        formatted_nw_mask = to_binary_string(_size, north_west)[-_size**2:]
+        formatted_ne_mask = to_binary_string(_size, north_east)[-_size**2:]
+        formatted_sw_mask = to_binary_string(_size, south_west)[-_size**2:]
+        formatted_se_mask = to_binary_string(_size, south_east)[-_size**2:]
+
+        attack_bitboard = int(formatted_north_mask, 2) | \
+                          int(formatted_south_mask, 2) | \
+                          int(formatted_east_mask, 2)  | \
+                          int(formatted_west_mask, 2)  | \
+                          int(formatted_nw_mask, 2)    | \
+                          int(formatted_ne_mask, 2)    | \
+                          int(formatted_sw_mask, 2)    | \
+                          int(formatted_se_mask, 2)
+
+        ATTACK_LUT.append(attack_bitboard)
+
+        display(_size, to_binary_string(_size, attack_bitboard))
 
 
 if __name__ == '__main__':
-    create_lookup_tables()
-    for i in range(64):
-        display(NORTH_RAY[i])
-        print()
+    size = 7
+    create_lookup_tables(size)
