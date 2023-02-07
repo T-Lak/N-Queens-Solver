@@ -1,11 +1,8 @@
 import math
 from textwrap import wrap
 
-from Utilities.bit_masks import *
 from Utilities.bit_operations import *
-
-
-ATTACK_LUT = []
+from Utilities.lookup_tables import create_attack_lut, ATTACK_LUT
 
 
 def display(bitboard: str) -> None:
@@ -13,46 +10,8 @@ def display(bitboard: str) -> None:
     print('\n'.join([' '.join(wrap(line[::-1], 1)) for line in wrap(bitboard, line_width)]), '\n')
 
 
-def create_lookup_table(n: int) -> None:
-    nxn_mask = 2**(n * n) - 1  # to truncate bits added by left-shift
-
-    north_mask = create_north_mask(n)
-    south_mask = create_south_mask(n)
-    east_mask  = create_east_mask(n)
-    west_mask  = create_west_mask(n)
-
-    north_east_mask = create_north_east_mask(n)
-    north_west_mask = create_north_west_mask(n) >> (n - 1)
-    south_east_mask = create_south_east_mask(n) << (n - 1)
-    south_west_mask = create_south_west_mask(n)
-
-    for square in range(n ** 2):
-        _file_idx = file_idx(square, n)
-
-        north_ray = north_mask << square
-        south_ray = south_mask >> ((n ** 2 - 1) - square)
-        east_ray  = (east_mask << square) & ~masked_west_files(_file_idx, n)
-        west_ray  = (west_mask >> ((n ** 2 - 1) - square)) & masked_west_files(_file_idx, n)
-
-        north_east_ray = north_east_mask  << square & ~masked_west_files(_file_idx, n)
-        north_west_ray = north_west_mask  << square & masked_west_files(_file_idx, n)
-        south_east_ray = (south_east_mask >> (n ** 2 - 1 - square)) & ~masked_west_files(_file_idx, n)
-        south_west_ray = south_west_mask  >> (n ** 2 - 1 - square) & masked_west_files(_file_idx, n)
-
-        attack_bitboard = north_ray | \
-                          north_east_ray | \
-                          east_ray | \
-                          south_east_ray | \
-                          south_ray | \
-                          south_west_ray | \
-                          west_ray | \
-                          north_west_ray
-
-        ATTACK_LUT.append(attack_bitboard & nxn_mask)
-
-
 if __name__ == '__main__':
-    size = 4
-    create_lookup_table(size)
+    size = 7
+    create_attack_lut(size)
     for i in range(size**2):
         display(to_binary_string(size, ATTACK_LUT[i]))
