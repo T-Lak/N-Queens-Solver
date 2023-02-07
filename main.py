@@ -11,7 +11,7 @@ def display(_size: int, bitboard: str) -> None:
     print('\n'.join([' '.join(wrap(line[::-1], 1)) for line in wrap(bitboard, _size)]), '\n')
 
 
-def create_lookup_tables(_size: int) -> None:
+def create_lookup_table(_size: int) -> None:
     north_mask = create_north_mask(_size)
     south_mask = create_south_mask(_size)
     east_mask  = create_east_mask(_size)
@@ -57,9 +57,9 @@ def create_lookup_tables(_size: int) -> None:
 
         ATTACK_LUT.append(attack_bitboard)
 
-        display(_size, to_binary_string(_size, attack_bitboard))
-
 
 if __name__ == '__main__':
     size = 7
-    create_lookup_tables(size)
+    create_lookup_table(size)
+    for i in range(size**2):
+        display(size, to_binary_string(size, ATTACK_LUT[i]))
