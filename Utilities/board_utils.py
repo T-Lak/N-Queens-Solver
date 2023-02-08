@@ -1,3 +1,7 @@
+import math
+from textwrap import wrap
+
+
 def to_binary_string(bitboard: int, n: int) -> str:
     """
     Transforms a bitboard from int to a binary string. The format
@@ -28,3 +32,14 @@ def file_idx(square: int, n: int):
     :return: file/column of the square
     """
     return square % n
+
+
+def display(bitboard: str) -> None:
+    """
+    Prints the bitboard by separating the lines. 1 stands for a possible attack
+    or a piece, 0 stands for an empty square
+    :param bitboard: any given bitboard
+    :return: None
+    """
+    line_width = int(math.sqrt(len(bitboard)))
+    print('\n'.join([' '.join(wrap(line[::-1], 1)) for line in wrap(bitboard, line_width)]), '\n')

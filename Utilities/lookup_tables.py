@@ -1,5 +1,5 @@
 from Utilities.bit_masks import *
-from Utilities.bit_operations import file_idx
+from Utilities.board_utils import file_idx
 
 ATTACK_LUT    = []
 FILE_MASK_LUT = []
