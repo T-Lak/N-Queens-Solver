@@ -68,5 +68,3 @@ def create_one_mask(x: int) -> int:
     for i in range(x*x + 1):
         mask |= mask << 1
     return mask
-
-

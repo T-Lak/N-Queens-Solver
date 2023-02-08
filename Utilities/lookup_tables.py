@@ -1,7 +1,9 @@
 from Utilities.bit_masks import *
 from Utilities.bit_operations import file_idx
 
-ATTACK_LUT = []
+ATTACK_LUT    = []
+FILE_MASK_LUT = []
+RANK_MASK_LUT = []
 
 
 def create_attack_lut(n: int) -> None:
@@ -45,3 +47,29 @@ def create_attack_lut(n: int) -> None:
                           north_west_ray
 
         ATTACK_LUT.append(attack_bitboard & nxn_mask)
+
+
+def create_file_masks(n: int) -> None:
+    """
+    Creates file masks for a given board size and stores them
+    in a lookup table.
+    :param n: board width
+    :return: None
+    """
+    mask = create_north_mask(n) | 0x1
+    FILE_MASK_LUT.append(mask)
+    for i in range(1, n):
+        FILE_MASK_LUT.append(mask << i)
+
+
+def create_rank_masks(n: int) -> None:
+    """
+    Creates rank masks for a given board size and stores them
+    in a lookup table.
+    :param n: board width
+    :return: None
+    """
+    mask = create_east_mask(n) | 0x1
+    RANK_MASK_LUT.append(mask)
+    for i in range(1, n):
+        RANK_MASK_LUT.append(mask << n * i)
