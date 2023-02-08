@@ -6,7 +6,7 @@ from Utilities.lookup_tables import *
 
 if __name__ == '__main__':
     bitboard = 0x0
-    size = 4
+    size = 8
     create_attack_lut(size)
     create_file_masks(size)
     create_file_square_lut(size)

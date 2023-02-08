@@ -77,13 +77,23 @@ def create_rank_masks(n: int) -> None:
 
 
 def create_file_square_lut(n: int) -> None:
-    for i in range(n):
-        FILE_SQUARE_LUT[i] = []
+    """
+    Creates a lookup table that maps all square numbers to each
+    file of a given board
+    :param n: board witdth
+    :return: None
+    """
     for i, file in enumerate(FILE_MASK_LUT):
         FILE_SQUARE_LUT[i] = bit_length(file)
 
 
-def bit_length(bitboard: int):
+def bit_length(bitboard: int) -> list:
+    """
+    Computes the pieces' positions by counting
+    the distance of the least significant bit.
+    :param bitboard: given board state
+    :return: list of squares (Positions of the pieces)
+    """
     squares = []
     bit_idx = 0
     while bitboard:

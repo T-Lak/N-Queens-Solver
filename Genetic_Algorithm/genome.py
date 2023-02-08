@@ -1,5 +1,5 @@
 from Utilities.board_utils import to_binary_string, display, count_bits_set
-from Utilities.lookup_tables import ATTACK_LUT
+from Utilities.lookup_tables import ATTACK_LUT, bit_length
 
 
 class Genome:
@@ -11,19 +11,12 @@ class Genome:
         self.eval_fitness()
 
     def eval_fitness(self):
-        chromosome = self.chromosome
         attacks = 0
-        bit_idx = 0
-        while chromosome:
-            if chromosome & 1:
-                attack_bb = ATTACK_LUT[bit_idx]
-                attacks += count_bits_set(attack_bb & self.chromosome)
-            chromosome >>= 1
-            bit_idx += 1
+        squares = bit_length(self.chromosome)
+        for square in squares:
+            attack_bb = ATTACK_LUT[square]
+            attacks += count_bits_set(attack_bb & self.chromosome)
         self.fitness -= attacks // 2
-        print(self.fitness)
-        if self.fitness >= 24:
-            display(to_binary_string(self.chromosome, self.size))
 
     def get_fitness(self):
         return self.fitness
