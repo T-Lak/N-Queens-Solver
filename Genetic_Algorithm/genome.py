@@ -17,22 +17,26 @@ class Genome:
     def __lt__(self, other) -> bool:
         return self._fitness < other.fitness
 
-    def eval_fitness(self):
+    @property
+    def fitness(self) -> int:
+        return self._fitness
+
+    @property
+    def size(self) -> int:
+        return self._size
+
+    @property
+    def chromosome(self) -> int:
+        return self._chromosome
+
+    @chromosome.setter
+    def chromosome(self, value) -> None:
+        self._chromosome = value
+
+    def eval_fitness(self) -> None:
         attacks = 0
         squares = bit_length(self._chromosome)
         for square in squares:
             attack_bb = ATTACK_LUT[square]
             attacks  += count_bits_set(attack_bb & self._chromosome)
         self._fitness -= attacks // 2
-
-    @property
-    def fitness(self):
-        return self._fitness
-
-    @property
-    def chromosome(self):
-        return self._chromosome
-
-    @chromosome.setter
-    def chromosome(self, value):
-        self._chromosome = value

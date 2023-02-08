@@ -1,3 +1,6 @@
+from Utilities.board_utils import to_binary_string, display
+
+
 def create_north_mask(n: int) -> int:
     mask = 0x0
     for i in range(1, n):
@@ -56,6 +59,11 @@ def masked_west_files(rank_idx: int, n: int) -> int:
     return mask
 
 
+def invert(bitboard: int, n: int):
+    mask = create_one_mask(n)
+    return bitboard ^ mask
+
+
 def create_south_west_mask(n: int) -> int:
     mask = 0x1 << (n * n - 1)
     for i in range(1, n - 1):
@@ -65,6 +73,6 @@ def create_south_west_mask(n: int) -> int:
 
 def create_one_mask(n: int) -> int:
     mask = 0x1
-    for i in range(n * n + 1):
+    for i in range(n * n - 1):
         mask |= mask << 1
     return mask
