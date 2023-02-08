@@ -5,7 +5,7 @@ from textwrap import wrap
 def to_binary_string(bitboard: int, n: int) -> str:
     """
     Transforms a bitboard from int to a binary string. The format
-    is given by the bitboards width.
+    is given by the bitboard's number of fields (n * n).
     :param bitboard: bitboard to transform
     :param n: board width
     :return: bitboard as binary string
@@ -43,3 +43,11 @@ def display(bitboard: str) -> None:
     """
     line_width = int(math.sqrt(len(bitboard)))
     print('\n'.join([' '.join(wrap(line[::-1], 1)) for line in wrap(bitboard, line_width)]), '\n')
+
+
+def count_bits_set(bitboard: int) -> int:
+    count = 0
+    while bitboard:
+        count += bitboard & 1
+        bitboard >>= 1
+    return count

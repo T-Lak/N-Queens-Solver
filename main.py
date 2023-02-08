@@ -1,13 +1,15 @@
-from Utilities.board_utils import *
+import random
+
+from Genetic_Algorithm.genetic_algorithm import GeneticAlgorithm
 from Utilities.lookup_tables import *
 
 
 if __name__ == '__main__':
-    size = 8
+    bitboard = 0x0
+    size = 4
     create_attack_lut(size)
     create_file_masks(size)
-    display(to_binary_string((ATTACK_LUT[0] | ATTACK_LUT[23]) & FILE_MASK_LUT[1], size))
-    display(to_binary_string(ATTACK_LUT[0], size))
-    display(to_binary_string(ATTACK_LUT[23], size))
-    # for square in range(size**2):
-    #     display(to_binary_string(size, ATTACK_LUT[square]))
+    create_file_square_lut(size)
+    gen_algo = GeneticAlgorithm(10, size)
+
+

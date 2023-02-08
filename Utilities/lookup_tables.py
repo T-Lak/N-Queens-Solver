@@ -1,9 +1,10 @@
 from Utilities.bit_masks import *
 from Utilities.board_utils import file_idx
 
-ATTACK_LUT    = []
-FILE_MASK_LUT = []
-RANK_MASK_LUT = []
+ATTACK_LUT      = []
+FILE_MASK_LUT   = []
+RANK_MASK_LUT   = []
+FILE_SQUARE_LUT = {}
 
 
 def create_attack_lut(n: int) -> None:
@@ -73,3 +74,21 @@ def create_rank_masks(n: int) -> None:
     RANK_MASK_LUT.append(mask)
     for i in range(1, n):
         RANK_MASK_LUT.append(mask << n * i)
+
+
+def create_file_square_lut(n: int) -> None:
+    for i in range(n):
+        FILE_SQUARE_LUT[i] = []
+    for i, file in enumerate(FILE_MASK_LUT):
+        FILE_SQUARE_LUT[i] = bit_length(file)
+
+
+def bit_length(bitboard: int):
+    squares = []
+    bit_idx = 0
+    while bitboard:
+        if bitboard & 1:
+            squares.append(bit_idx)
+        bitboard >>= 1
+        bit_idx += 1
+    return squares
