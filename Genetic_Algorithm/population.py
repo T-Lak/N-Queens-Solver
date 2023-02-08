@@ -8,10 +8,10 @@ from Utilities.lookup_tables import FILE_SQUARE_LUT
 class Population:
 
     def __init__(self, size, genome_size):
-        self.genomes = []
-        self.size = size
+        self._genomes = []
+        self._size = size
         self.populate(genome_size)
-        self.genomes.sort(key=lambda g: g.fitness)
+        self._genomes.sort(key=lambda g: g.fitness)
 
     def populate(self, genome_size: int) -> None:
         for _ in range(self.size):
@@ -22,27 +22,29 @@ class Population:
                 bitboard |= 0x1 << square
             self.genomes.append(Genome(bitboard, genome_size))
 
-    def get_genomes(self) -> list:
-        return self.genomes
+    @property
+    def genomes(self) -> list:
+        return self._genomes
+
+    @property
+    def size(self) -> int:
+        return self._size
 
     def fittest(self) -> Genome:
-        return self.genomes[-1]
+        return self._genomes[-1]
 
     def n_fittest(self, n: int) -> list:
-        return self.genomes[-n:]
+        return self._genomes[-n:]
 
     def worst(self) -> Genome:
-        return self.genomes[0]
+        return self._genomes[0]
 
     def random_genome(self) -> Genome:
-        return random.choice(self.genomes)
+        return random.choice(self._genomes)
 
     def n_random_genomes(self, n: int) -> list:
-        return random.sample(self.genomes, n)
+        return random.sample(self._genomes, n)
 
     def replace(self, old: Genome, new: Genome):
-        self.genomes.remove(old)
-        bisect.insort(self.genomes, new)
-
-    def size(self) -> int:
-        return self.size
+        self._genomes.remove(old)
+        bisect.insort(self._genomes, new)
