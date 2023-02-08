@@ -80,7 +80,7 @@ def create_file_square_lut(n: int) -> None:
     """
     Creates a lookup table that maps all square numbers to each
     file of a given board
-    :param n: board witdth
+    :param n: board width
     :return: None
     """
     for i, file in enumerate(FILE_MASK_LUT):

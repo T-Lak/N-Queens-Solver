@@ -5,11 +5,11 @@ from Utilities.lookup_tables import *
 
 if __name__ == '__main__':
     bitboard = 0x0
-    size = 3
+    size = 12
     create_attack_lut(size)
     create_file_masks(size)
     create_file_square_lut(size)
     gen_algo = GeneticAlgorithm(10, size)
     # print(gen_algo.population.genomes)
-    bb = FILE_MASK_LUT[1]
+    bb = 0x400820108004000301040202
     display(to_binary_string(bb, size))
