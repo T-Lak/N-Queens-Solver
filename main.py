@@ -11,5 +11,7 @@ if __name__ == '__main__':
     create_file_masks(size)
     create_file_square_lut(size)
     gen_algo = GeneticAlgorithm(10, size)
+    # print(gen_algo.population())
+    # [print(genome) for genome in gen_algo.population().genomes()]
 
 
