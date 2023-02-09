@@ -14,4 +14,4 @@ if __name__ == '__main__':
     # print(gen_algo.population.genomes)
     bb = 0x01120040A8040000
     l = Greedy(1, size).compute([bb])
-    # display(to_binary_string(l[0], size))
+    display(to_binary_string(l[0], size))

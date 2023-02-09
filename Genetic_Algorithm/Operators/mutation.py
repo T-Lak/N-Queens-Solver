@@ -1,10 +1,8 @@
-import math
 import random
 from abc import ABC, abstractmethod
 
-from Utilities.bit_masks import invert
-from Utilities.board_utils import count_bits_set, file_idx, to_binary_string, display
-from Utilities.lookup_tables import ATTACK_LUT, FILE_SQUARE_LUT, FILE_MASK_LUT, CLEAR_FILE_LUT
+from Utilities.board_utils import file_idx
+from Utilities.lookup_tables import ATTACK_LUT, FILE_SQUARE_LUT, CLEAR_FILE_LUT
 
 
 class MutStrategy(ABC):
@@ -27,8 +25,8 @@ class MutationContext:
     def strategy(self, strategy) -> None:
         self._strategy = strategy
 
-    def execute(self):
-        self._strategy.compute()
+    def execute(self, offset: list):
+        self._strategy.compute(offset)
 
 
 class SwapNeighbor(MutStrategy):
@@ -64,7 +62,8 @@ class Greedy(MutStrategy):
             offset.append(chromosome)
         return offset
 
-    def _greediest_queen(self, bitboard):
+    @staticmethod
+    def _greediest_queen(bitboard: int) -> int:
         num_attacks, bit_idx, queen_sq = 0, 0, 0
         temp_bb = bitboard
         while temp_bb:
@@ -78,7 +77,7 @@ class Greedy(MutStrategy):
             bit_idx  += 1
         return queen_sq
 
-    def _compute_new_position(self, square):
+    def _compute_new_position(self, square: int) -> tuple:
         sq_file = file_idx(square, self._board_size)
         squares = FILE_SQUARE_LUT[sq_file]
         squares.remove(square)
