@@ -34,19 +34,6 @@ def file_idx(square: int, n: int):
     return square % n
 
 
-def count_bits_set(bitboard: int) -> int:
-    """
-    Counts all bits set in a given bitboard.
-    :param bitboard: given board state
-    :return: number of pieces on the board
-    """
-    count = 0
-    while bitboard:
-        count += bitboard & 1
-        bitboard >>= 1
-    return count
-
-
 def display(bitboard: str) -> None:
     """
     Prints the bitboard by separating the lines. 1 stands for a possible attack

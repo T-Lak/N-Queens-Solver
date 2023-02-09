@@ -1,7 +1,7 @@
 import random
 from abc import ABC, abstractmethod
 
-from Utilities.bit_masks import masked_west_files, invert
+from Utilities.bit_masks import masked_west_files, invert, ZERO
 from Utilities.lookup_tables import FILE_MASK_LUT
 
 
@@ -55,7 +55,7 @@ class TwoPoint(XStrategy):
     def compute(self, parents: list, breed_limit: int) -> list:
         children = []
         while len(children) < breed_limit:
-            child_1,  child_2  = 0x0, 0x0
+            child_1,  child_2  = ZERO, ZERO
             parent_1, parent_2 = random.sample(parents, 2)
             start = random.randint(1, self._n // 2)
             end   = random.randint(start + 1, self._n - 1)
@@ -79,7 +79,7 @@ class Uniform(XStrategy):
     def compute(self, parents: list, breed_limit: int) -> list:
         children = []
         while len(children) < breed_limit:
-            child_1,  child_2  = 0x0, 0x0
+            child_1,  child_2  = ZERO, ZERO
             parent_1, parent_2 = random.sample(parents, 2)
             for file in range(self._n):
                 toss = random.randint(0, 1)

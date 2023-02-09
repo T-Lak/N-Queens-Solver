@@ -1,6 +1,7 @@
 import random
 from abc import ABC, abstractmethod
 
+from Utilities.bit_masks import BIT
 from Utilities.board_utils import file_idx
 from Utilities.lookup_tables import ATTACK_LUT, FILE_SQUARE_LUT, CLEAR_FILE_LUT, FILE_MASK_LUT
 
@@ -43,7 +44,7 @@ class SwapNeighbor(MutStrategy):
             gene_1      = chromosome & FILE_MASK_LUT[file_idx_1]
             gene_2      = chromosome & FILE_MASK_LUT[file_idx_2]
             chromosome ^= gene_1 | gene_2
-            chromosome |= gene_1 << 1 | gene_2 >> 1
+            chromosome |= gene_1 << BIT | gene_2 >> BIT
             offset.append(chromosome)
         return offset
 
@@ -79,7 +80,7 @@ class Greedy(MutStrategy):
             chromosome  = offset.pop()
             queen_sq = self._greediest_queen(chromosome)
             sq_file, new_square = self._compute_new_position(queen_sq)
-            chromosome = (chromosome & CLEAR_FILE_LUT[sq_file]) | (0x1 << new_square)
+            chromosome = (chromosome & CLEAR_FILE_LUT[sq_file]) | (BIT << new_square)
             offset.append(chromosome)
         return offset
 
@@ -88,14 +89,14 @@ class Greedy(MutStrategy):
         num_attacks, bit_idx, queen_sq = 0, 0, 0
         temp_bb = bitboard
         while temp_bb:
-            if temp_bb & 1:
+            if temp_bb & BIT:
                 attack_bb = ATTACK_LUT[bit_idx]
                 attacks = bin(attack_bb & bitboard).count("1")
                 if attacks > num_attacks:
                     num_attacks = attacks
                     queen_sq = bit_idx
-            temp_bb >>= 1
-            bit_idx  += 1
+            temp_bb >>= BIT
+            bit_idx  += BIT
         return queen_sq
 
     def _compute_new_position(self, square: int) -> tuple:

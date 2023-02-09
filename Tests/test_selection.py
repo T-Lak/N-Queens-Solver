@@ -9,15 +9,19 @@ from Utilities.lookup_tables import create_file_masks, create_file_square_lut, c
 
 class MyTestCase(unittest.TestCase):
 
+    def setUp(self) -> None:
+        self.n = 8
+        create_file_masks(self.n)
+        create_attack_lut(self.n)
+        create_file_square_lut(self.n)
+        parents = create_parents(self.n)
+        self.genome_1 = Genome(parents[0], self.n)
+        self.genome_2 = Genome(parents[1], self.n)
+
     def test_something(self):
-        n = 8
-        create_file_masks(n)
-        create_attack_lut(n)
-        create_file_square_lut(n)
-        parents = create_parents(n)
-        rw = RouletteWheel(n)
-        population = Population(2, n)
-        population.genomes = [Genome(parents[0], n), Genome(parents[1], n)]
+        rw = RouletteWheel(self.n)
+        population = Population(2, self.n)
+        population.genomes = [self.genome_1, self.genome_2]
         rw.compute(population)
         self.assertEqual(True, True)
 
