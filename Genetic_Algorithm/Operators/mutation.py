@@ -2,7 +2,7 @@ import random
 from abc import ABC, abstractmethod
 
 from Utilities.board_utils import file_idx
-from Utilities.lookup_tables import ATTACK_LUT, FILE_SQUARE_LUT, CLEAR_FILE_LUT
+from Utilities.lookup_tables import ATTACK_LUT, FILE_SQUARE_LUT, CLEAR_FILE_LUT, FILE_MASK_LUT
 
 
 class MutStrategy(ABC):
@@ -31,20 +31,41 @@ class MutationContext:
 
 class SwapNeighbor(MutStrategy):
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, rate, board_size) -> None:
+        self._rate = rate
+        self._board_size = board_size
 
     def compute(self, offset: list) -> list:
-        pass
+        for _ in range(len(offset) * self._rate):
+            chromosome  = offset.pop()
+            file_idx_1  = random.randint(0, self._board_size - 2)
+            file_idx_2  = file_idx_1 + 1
+            gene_1      = chromosome & FILE_MASK_LUT[file_idx_1]
+            gene_2      = chromosome & FILE_MASK_LUT[file_idx_2]
+            chromosome ^= gene_1 | gene_2
+            chromosome |= gene_1 << 1 | gene_2 >> 1
+            offset.append(chromosome)
+        return offset
 
 
 class SwapRandom(MutStrategy):
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, rate, board_size) -> None:
+        self._rate = rate
+        self._board_size = board_size
 
     def compute(self, offset: list) -> list:
-        pass
+        for _ in range(len(offset) * self._rate):
+            chromosome  = offset.pop()
+            file_idx_1  = random.randint(0, self._board_size // 2)
+            file_idx_2  = random.randint(self._board_size // 2 + 1, self._board_size - 1)
+            bit_shift   = file_idx_2 - file_idx_1
+            gene_1      = chromosome & FILE_MASK_LUT[file_idx_1]
+            gene_2      = chromosome & FILE_MASK_LUT[file_idx_2]
+            chromosome ^= gene_1 | gene_2
+            chromosome |= gene_1 << bit_shift | gene_2 >> bit_shift
+            offset.append(chromosome)
+        return offset
 
 
 class Greedy(MutStrategy):
@@ -54,7 +75,7 @@ class Greedy(MutStrategy):
         self._board_size = board_size
 
     def compute(self, offset: list) -> list:
-        for i in range(len(offset) * self._rate):
+        for _ in range(len(offset) * self._rate):
             chromosome  = offset.pop()
             queen_sq = self._greediest_queen(chromosome)
             sq_file, new_square = self._compute_new_position(queen_sq)
