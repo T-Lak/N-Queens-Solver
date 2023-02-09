@@ -3,7 +3,9 @@ from Utilities.board_utils import file_idx
 
 ATTACK_LUT      = []
 FILE_MASK_LUT   = []
+CLEAR_FILE_LUT  = []
 RANK_MASK_LUT   = []
+CLEAR_RANK_LUT  = []
 FILE_SQUARE_LUT = {}
 
 
@@ -59,8 +61,10 @@ def create_file_masks(n: int) -> None:
     """
     mask = create_north_mask(n) | 0x1
     FILE_MASK_LUT.append(mask)
+    CLEAR_FILE_LUT.append(invert(mask, n))
     for i in range(1, n):
         FILE_MASK_LUT.append(mask << i)
+        CLEAR_FILE_LUT.append(invert(mask << i, n))
 
 
 def create_rank_masks(n: int) -> None:
@@ -84,10 +88,10 @@ def create_file_square_lut(n: int) -> None:
     :return: None
     """
     for i, file in enumerate(FILE_MASK_LUT):
-        FILE_SQUARE_LUT[i] = bit_length(file)
+        FILE_SQUARE_LUT[i] = bit_scan_forward(file)
 
 
-def bit_length(bitboard: int) -> list:
+def bit_scan_forward(bitboard: int) -> list:
     """
     Computes the pieces' positions by counting
     the distance of the least significant bit.

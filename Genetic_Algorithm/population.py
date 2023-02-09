@@ -39,6 +39,9 @@ class Population:
     def worst(self) -> Genome:
         return self._genomes[0]
 
+    def total_fitness(self) -> int:
+        return sum(genome.fitness for genome in self.genomes)
+
     def random_genome(self) -> Genome:
         return random.choice(self._genomes)
 
@@ -48,3 +51,7 @@ class Population:
     def replace(self, old: Genome, new: Genome):
         self._genomes.remove(old)
         bisect.insort(self._genomes, new)
+
+    @genomes.setter
+    def genomes(self, value):
+        self._genomes = value

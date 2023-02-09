@@ -1,6 +1,3 @@
-from Utilities.board_utils import to_binary_string, display
-
-
 def create_north_mask(n: int) -> int:
     mask = 0x0
     for i in range(1, n):
