@@ -8,11 +8,9 @@ from Utilities.lookup_tables import FILE_SQUARE_LUT
 
 class Population:
 
-    def __init__(self, size, genome_size):
+    def __init__(self, size):
         self._genomes = []
         self._size = size
-        self.populate(genome_size)
-        self._genomes.sort(key=lambda g: g.fitness)
 
     def populate(self, genome_size: int) -> None:
         for _ in range(self.size):
@@ -22,10 +20,16 @@ class Population:
                 square    = random.choice(squares)
                 bitboard |= BIT << square
             self.genomes.append(Genome(bitboard, genome_size))
+        self._genomes.sort(key=lambda g: g.fitness)
 
     @property
     def genomes(self) -> list:
         return self._genomes
+
+    @genomes.setter
+    def genomes(self, value: list) -> None:
+        self._genomes = value
+        self._genomes.sort(key=lambda g: g.fitness)
 
     @property
     def size(self) -> int:
@@ -52,7 +56,3 @@ class Population:
     def replace(self, old: Genome, new: Genome):
         self._genomes.remove(old)
         bisect.insort(self._genomes, new)
-
-    @genomes.setter
-    def genomes(self, value):
-        self._genomes = value

@@ -30,7 +30,7 @@ class SelectionContext:
 
 class Tournament(SelStrategy):
 
-    def __init__(self, rate: int, n: int) -> None:
+    def __init__(self, n: int, rate=.2) -> None:
         self._rate = rate
         self._n = n
 
@@ -45,7 +45,7 @@ class Tournament(SelStrategy):
 
 class RouletteWheel(SelStrategy):
 
-    def __init__(self, rate) -> None:
+    def __init__(self, rate=.2) -> None:
         self._rate = rate
 
     def compute(self, population: Population) -> list:
@@ -58,7 +58,7 @@ class RouletteWheel(SelStrategy):
 
 class RankBased(SelStrategy):
 
-    def __init__(self, rate: int) -> None:
+    def __init__(self, rate=.2) -> None:
         self._rate = rate
 
     def compute(self, population: Population) -> list:

@@ -8,12 +8,13 @@ class Genome:
     def __init__(self, chromosome, size):
         self._chromosome = chromosome
         self._size = size
-        self._fitness = size * (size - 1) // 2
+        self._fitness = 0
+        self._ideal_fitness = size * (size - 1) // 2
         self.eval_fitness()
 
     def __repr__(self) -> str:
-        return 'Genome(chromosome: {} - fitness: {})'\
-            .format(to_binary_string(self._chromosome, self._size), self._fitness)
+        return 'Genome(chromosome: {} | fitness: {} | ideal fitness: {})'\
+            .format(to_binary_string(self._chromosome, self._size), self._fitness, self._ideal_fitness)
 
     def __lt__(self, other) -> bool:
         return self._fitness < other.fitness
@@ -43,4 +44,4 @@ class Genome:
                 attacks  += bin(attack_bb & self._chromosome).count("1")
             temp_bb >>= BIT
             bit_idx  += BIT
-        self._fitness -= attacks // 2
+        self._fitness = self._ideal_fitness - attacks // 2
