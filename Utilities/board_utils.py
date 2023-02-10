@@ -1,6 +1,8 @@
 import math
 from textwrap import wrap
 
+from Utilities.bit_masks import ZERO
+
 
 def to_binary_string(bitboard: int, n: int) -> str:
     """
@@ -11,7 +13,7 @@ def to_binary_string(bitboard: int, n: int) -> str:
     :return: bitboard as binary string
     """
     binary_repr = f'{{:0{n**2}b}}'
-    return binary_repr.format(bitboard)
+    return binary_repr.format(bitboard).replace('0', '.') # .replace('1', 'Q')
 
 
 def rank_idx(square: int, n: int):
@@ -32,6 +34,33 @@ def file_idx(square: int, n: int):
     :return: file/column of the square
     """
     return square % n
+
+
+def bit_scan_forward(bitboard: int) -> list:
+    """
+    Computes the pieces' positions by counting
+    the distance of the least significant bit.
+    :param bitboard: given board state
+    :return: list of squares (Positions of the pieces)
+    """
+    squares = []
+    bit_idx = 0
+    while bitboard:
+        if bitboard & 1:
+            squares.append(bit_idx)
+        bitboard >>= 1
+        bit_idx += 1
+    return squares
+
+
+def rotate_90_deg_clockwise(bitboard: int, n: int) -> int:
+    squares = bit_scan_forward(bitboard)
+    bb = ZERO
+    for _, square in enumerate(squares):
+        _file_idx = square // n
+        _rank_idx = (n-1) - (square % n)
+        bb |= 1 << ((n * _rank_idx) + _file_idx)
+    return bb
 
 
 def display(bitboard: str) -> None:

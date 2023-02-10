@@ -1,5 +1,5 @@
 from Utilities.bit_masks import *
-from Utilities.board_utils import file_idx
+from Utilities.board_utils import file_idx, bit_scan_forward
 
 ATTACK_LUT      = []
 FILE_MASK_LUT   = []
@@ -91,18 +91,25 @@ def create_file_square_lut(n: int) -> None:
         FILE_SQUARE_LUT[i] = bit_scan_forward(file)
 
 
-def bit_scan_forward(bitboard: int) -> list:
-    """
-    Computes the pieces' positions by counting
-    the distance of the least significant bit.
-    :param bitboard: given board state
-    :return: list of squares (Positions of the pieces)
-    """
-    squares = []
-    bit_idx = 0
-    while bitboard:
-        if bitboard & 1:
-            squares.append(bit_idx)
-        bitboard >>= 1
-        bit_idx += 1
-    return squares
+def mirror_horizontally(bitboard: int, n: int) -> int:
+    bb = ZERO
+    lo = n // 2
+    for _file_idx in range(lo):
+        new_square = (n-1) - _file_idx
+        bb |= (bitboard & FILE_MASK_LUT[_file_idx]) << (new_square - _file_idx)
+    for _file_idx in range(lo, n):
+        new_square = (n - 1) - _file_idx
+        bb |= (bitboard & FILE_MASK_LUT[_file_idx]) >> (_file_idx - new_square)
+    return bb
+
+
+def mirror_vertically(bitboard: int, n: int) -> int:
+    bb = ZERO
+    lo = n // 2
+    for _rank_idx in range(lo):
+        new_square = (n-1) - _rank_idx
+        bb |= (bitboard & RANK_MASK_LUT[_rank_idx]) << (n * (new_square - _rank_idx))
+    for _rank_idx in range(lo, n):
+        new_square = (n - 1) - _rank_idx
+        bb |= (bitboard & RANK_MASK_LUT[_rank_idx]) >> (n * (_rank_idx - new_square))
+    return bb

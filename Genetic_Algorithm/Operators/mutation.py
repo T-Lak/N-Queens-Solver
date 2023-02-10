@@ -32,14 +32,14 @@ class MutationContext:
 
 class SwapNeighbor(MutStrategy):
 
-    def __init__(self, rate, board_size) -> None:
+    def __init__(self, rate, genome_size) -> None:
         self._rate = rate
-        self._board_size = board_size
+        self._genome_size = genome_size
 
     def compute(self, offset: list) -> list:
         for _ in range(len(offset) * self._rate):
             chromosome  = offset.pop()
-            file_idx_1  = random.randint(0, self._board_size - 2)
+            file_idx_1  = random.randint(0, self._genome_size - 2)
             file_idx_2  = file_idx_1 + 1
             gene_1      = chromosome & FILE_MASK_LUT[file_idx_1]
             gene_2      = chromosome & FILE_MASK_LUT[file_idx_2]
@@ -51,15 +51,15 @@ class SwapNeighbor(MutStrategy):
 
 class SwapRandom(MutStrategy):
 
-    def __init__(self, rate, board_size) -> None:
+    def __init__(self, rate, genome_size) -> None:
         self._rate = rate
-        self._board_size = board_size
+        self._genome_size = genome_size
 
     def compute(self, offset: list) -> list:
         for _ in range(len(offset) * self._rate):
             chromosome  = offset.pop()
-            file_idx_1  = random.randint(0, self._board_size // 2)
-            file_idx_2  = random.randint(self._board_size // 2 + 1, self._board_size - 1)
+            file_idx_1  = random.randint(0, self._genome_size // 2)
+            file_idx_2  = random.randint(self._genome_size // 2 + 1, self._genome_size - 1)
             bit_shift   = file_idx_2 - file_idx_1
             gene_1      = chromosome & FILE_MASK_LUT[file_idx_1]
             gene_2      = chromosome & FILE_MASK_LUT[file_idx_2]
@@ -71,9 +71,9 @@ class SwapRandom(MutStrategy):
 
 class Greedy(MutStrategy):
 
-    def __init__(self, rate, board_size) -> None:
+    def __init__(self, rate, genome_size) -> None:
         self._rate = rate
-        self._board_size = board_size
+        self._genome_size = genome_size
 
     def compute(self, offset: list) -> list:
         for _ in range(len(offset) * self._rate):
@@ -100,7 +100,7 @@ class Greedy(MutStrategy):
         return queen_sq
 
     def _compute_new_position(self, square: int) -> tuple:
-        sq_file = file_idx(square, self._board_size)
+        sq_file = file_idx(square, self._genome_size)
         squares = FILE_SQUARE_LUT[sq_file]
         squares.remove(square)
         new_square = random.choice(squares)

@@ -63,8 +63,7 @@ class RankBased(SelStrategy):
 
     def compute(self, population: Population) -> list:
         selection = []
-        ranks = [i + 1 for i, _ in enumerate(population.genomes)]
-        probabilities = [rank / population.size for rank in ranks]
+        probabilities = [(idx + 1) / population.size for idx, _ in enumerate(population.genomes)]
         while len(selection) < population.size * self._rate:
             selection.append(np.random.choice(population.genomes, p=probabilities))
         return selection

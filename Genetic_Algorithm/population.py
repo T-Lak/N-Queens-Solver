@@ -2,7 +2,7 @@ import random
 import bisect
 
 from Genetic_Algorithm.genome import Genome
-from Utilities.bit_masks import BIT
+from Utilities.bit_masks import BIT, ZERO
 from Utilities.lookup_tables import FILE_SQUARE_LUT
 
 
@@ -18,8 +18,8 @@ class Population:
         for _ in range(self.size):
             bitboard = ZERO
             for i in range(genome_size):
-                squares = FILE_SQUARE_LUT.get(i)
-                square = random.choice(squares)
+                squares   = FILE_SQUARE_LUT.get(i)
+                square    = random.choice(squares)
                 bitboard |= BIT << square
             self.genomes.append(Genome(bitboard, genome_size))
 
