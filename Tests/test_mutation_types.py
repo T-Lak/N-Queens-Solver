@@ -4,7 +4,7 @@ from Genetic_Algorithm.Operators.mutation import *
 from Utilities.lookup_tables import create_attack_lut, create_file_masks, create_file_square_lut, FILE_MASK_LUT
 
 
-class MyTestCase(unittest.TestCase):
+class MutationTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.n = 8

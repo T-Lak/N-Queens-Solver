@@ -54,6 +54,12 @@ def bit_scan_forward(bitboard: int) -> list:
 
 
 def rotate_90_deg_clockwise(bitboard: int, n: int) -> int:
+    """
+    Rotates a given bitboard by 90 degrees.
+    :param bitboard: given bitboard
+    :param n: board width
+    :return: rotated bitboard
+    """
     squares = bit_scan_forward(bitboard)
     bb = ZERO
     for _, square in enumerate(squares):

@@ -4,7 +4,7 @@ from Genetic_Algorithm.genome import Genome
 from Utilities.lookup_tables import create_attack_lut
 
 
-class MyTestCase(unittest.TestCase):
+class GeneticAlgorithmTest(unittest.TestCase):
 
     def test_fitness_evaluation(self):
         n = 8

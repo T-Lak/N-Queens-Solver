@@ -4,7 +4,7 @@ from Genetic_Algorithm.Operators.crossover import *
 from Utilities.lookup_tables import FILE_SQUARE_LUT, create_file_square_lut, create_file_masks
 
 
-class MyTestCase(unittest.TestCase):
+class CrossoverTest(unittest.TestCase):
 
     def test_single_point_crossover_8x8(self):
         n = 8

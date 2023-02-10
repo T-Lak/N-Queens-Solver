@@ -92,6 +92,12 @@ def create_file_square_lut(n: int) -> None:
 
 
 def mirror_horizontally(bitboard: int, n: int) -> int:
+    """
+    Mirrors a given bitboard horizontally
+    :param bitboard: given bitboard
+    :param n: board width
+    :return: horizontally mirrored bitboard
+    """
     bb = ZERO
     lo = n // 2
     for _file_idx in range(lo):
@@ -104,6 +110,12 @@ def mirror_horizontally(bitboard: int, n: int) -> int:
 
 
 def mirror_vertically(bitboard: int, n: int) -> int:
+    """
+    Mirrors a given bitboard vertically
+    :param bitboard: given bitboard
+    :param n: board width
+    :return: vertically mirrored bitboard
+    """
     bb = ZERO
     lo = n // 2
     for _rank_idx in range(lo):

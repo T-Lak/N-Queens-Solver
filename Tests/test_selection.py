@@ -7,7 +7,7 @@ from Tests.test_crossover import create_parents
 from Utilities.lookup_tables import create_file_masks, create_file_square_lut, create_attack_lut
 
 
-class MyTestCase(unittest.TestCase):
+class SelectionTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.n = 8
