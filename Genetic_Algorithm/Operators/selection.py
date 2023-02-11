@@ -52,7 +52,8 @@ class RouletteWheel(SelStrategy):
         selection = []
         probabilities = [g.fitness / population.total_fitness() for g in population.genomes]
         while len(selection) < population.size * self._rate:
-            selection.append(np.random.choice(population.genomes, p=probabilities))
+            genome = np.random.choice(population.genomes, p=probabilities)
+            selection.append(genome)
         return selection
 
 
@@ -63,7 +64,7 @@ class RankBased(SelStrategy):
 
     def compute(self, population: Population) -> list:
         selection = []
-        probabilities = [(idx + 1) / population.size for idx, _ in enumerate(population.genomes)]
+        probabilities = [(idx + 1) // population.size for idx, _ in enumerate(population.genomes)]
         while len(selection) < population.size * self._rate:
             selection.append(np.random.choice(population.genomes, p=probabilities))
         return selection

@@ -1,12 +1,27 @@
 from Utilities.bit_masks import *
 from Utilities.board_utils import file_idx, bit_scan_forward
 
-ATTACK_LUT      = []
-FILE_MASK_LUT   = []
-CLEAR_FILE_LUT  = []
-RANK_MASK_LUT   = []
-CLEAR_RANK_LUT  = []
-FILE_SQUARE_LUT = {}
+ATTACK_LUT        = []
+FILE_MASK_LUT     = []
+CLEAR_FILE_LUT    = []
+RANK_MASK_LUT     = []
+CLEAR_RANK_LUT    = []
+FILE_SQUARE_LUT   = {}
+ALL_SOLUTIONS_LUT = {
+    1: 1,
+    2: 0,
+    3: 0,
+    4: 2,
+    5: 10,
+    6: 4,
+    7: 40,
+    8: 92,
+    9: 352,
+    10: 724,
+    11: 2680,
+    12: 14200,
+    13: 73712,
+}
 
 
 def create_attack_lut(n: int) -> None:

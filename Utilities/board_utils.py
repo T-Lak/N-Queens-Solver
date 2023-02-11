@@ -4,18 +4,6 @@ from textwrap import wrap
 from Utilities.bit_masks import ZERO
 
 
-def to_binary_string(bitboard: int, n: int) -> str:
-    """
-    Transforms a bitboard from int to a binary string. The format
-    is given by the bitboard's number of fields (n * n).
-    :param bitboard: bitboard to transform
-    :param n: board width
-    :return: bitboard as binary string
-    """
-    binary_repr = f'{{:0{n**2}b}}'
-    return binary_repr.format(bitboard).replace('0', '.') # .replace('1', 'Q')
-
-
 def rank_idx(square: int, n: int):
     """
     Calculates the square's rank (row) of any given board size.
@@ -78,3 +66,15 @@ def display(bitboard: str) -> None:
     """
     line_width = int(math.sqrt(len(bitboard)))
     print('\n'.join([' '.join(wrap(line[::-1], 1)) for line in wrap(bitboard, line_width)]), '\n')
+
+
+def to_binary_string(bitboard: int, n: int) -> str:
+    """
+    Transforms a bitboard from int to a binary string. The format
+    is given by the bitboard's number of fields (n * n).
+    :param bitboard: bitboard to transform
+    :param n: board width
+    :return: bitboard as binary string
+    """
+    binary_repr = f'{{:0{n**2}b}}'
+    return binary_repr.format(bitboard).replace('0', '.').replace('1', 'Q')

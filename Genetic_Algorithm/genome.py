@@ -13,8 +13,8 @@ class Genome:
         self.eval_fitness()
 
     def __repr__(self) -> str:
-        return 'Genome(chromosome: {} | fitness: {} | ideal fitness: {})'\
-            .format(to_binary_string(self._chromosome, self._size), self._fitness, self._ideal_fitness)
+        return 'Genome(chromosome: {} | fitness: {})'\
+            .format(hex(self._chromosome), self._fitness)
 
     def __lt__(self, other) -> bool:
         return self._fitness < other.fitness

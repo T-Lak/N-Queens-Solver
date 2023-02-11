@@ -31,35 +31,37 @@ class CrossoverContext:
 
 class SinglePoint(XStrategy):
 
-    def __init__(self, n) -> None:
-        self._n = n
+    def __init__(self, chrom_size, rate=.8) -> None:
+        self._chrom_size = chrom_size
+        self._rate = rate
 
     def compute(self, parents: list, breed_limit: int) -> list:
-        children = []
-        while len(children) < breed_limit:
-            x_point = random.randint(1, self._n)
-            left_mask = masked_west_files(x_point, self._n)
-            right_mask = invert(left_mask, self._n)
+        offset = []
+        while len(offset) < 100 * self._rate:
+            x_point = random.randint(1, self._chrom_size)
+            left_mask = masked_west_files(x_point, self._chrom_size)
+            right_mask = invert(left_mask, self._chrom_size)
             parent_1, parent_2 = random.sample(parents, 2)
             child_1 = (parent_1.chromosome & left_mask) | (parent_2.chromosome & right_mask)
             child_2 = (parent_2.chromosome & left_mask) | (parent_1.chromosome & right_mask)
-            children.extend([child_1, child_2])
-        return children
+            offset.extend([child_1, child_2])
+        return offset
 
 
 class TwoPoint(XStrategy):
 
-    def __init__(self, n) -> None:
-        self._n = n
+    def __init__(self, chrom_size, rate=.8) -> None:
+        self._chrom_size = chrom_size
+        self._rate = rate
 
     def compute(self, parents: list, breed_limit: int) -> list:
-        children = []
-        while len(children) < breed_limit:
+        offset = []
+        while len(offset) < 100 * self._rate:
             child_1,  child_2  = ZERO, ZERO
             parent_1, parent_2 = random.sample(parents, 2)
-            start = random.randint(1, self._n // 2)
-            end   = random.randint(start + 1, self._n - 1)
-            for file in range(self._n):
+            start = random.randint(1, self._chrom_size // 2)
+            end   = random.randint(start + 1, self._chrom_size - 1)
+            for file in range(self._chrom_size):
                 file_mask = FILE_MASK_LUT[file]
                 if file < start or file > end:
                     child_1 |= parent_1.chromosome & file_mask
@@ -67,21 +69,22 @@ class TwoPoint(XStrategy):
                 else:
                     child_1 |= parent_2.chromosome & file_mask
                     child_2 |= parent_1.chromosome & file_mask
-            children.extend([child_1, child_2])
-        return children
+            offset.extend([child_1, child_2])
+        return offset
 
 
 class Uniform(XStrategy):
 
-    def __init__(self, n) -> None:
-        self._n = n
+    def __init__(self, chrom_size, rate=.8) -> None:
+        self._chrom_size = chrom_size
+        self._rate = rate
 
     def compute(self, parents: list, breed_limit: int) -> list:
-        children = []
-        while len(children) < breed_limit:
+        offset = []
+        while len(offset) < 100 * self._rate:
             child_1,  child_2  = ZERO, ZERO
             parent_1, parent_2 = random.sample(parents, 2)
-            for file in range(self._n):
+            for file in range(self._chrom_size):
                 toss = random.randint(0, 1)
                 file_mask = FILE_MASK_LUT[file]
                 if toss == 1:
@@ -90,5 +93,5 @@ class Uniform(XStrategy):
                 else:
                     child_1 |= parent_1.chromosome & file_mask
                     child_2 |= parent_2.chromosome & file_mask
-            children.extend([child_1, child_2])
-        return children
+            offset.extend([child_1, child_2])
+        return offset

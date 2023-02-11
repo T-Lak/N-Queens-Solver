@@ -26,8 +26,8 @@ class MutationContext:
     def strategy(self, strategy) -> None:
         self._strategy = strategy
 
-    def execute(self, offset: list):
-        self._strategy.compute(offset)
+    def execute(self, offset: list) -> list:
+        return self._strategy.compute(offset)
 
 
 class SwapNeighbor(MutStrategy):
@@ -37,7 +37,7 @@ class SwapNeighbor(MutStrategy):
         self._genome_size = genome_size
 
     def compute(self, offset: list) -> list:
-        for _ in range(len(offset) * self._rate):
+        for _ in range(int(len(offset) * self._rate)):
             chromosome  = offset.pop()
             file_idx_1  = random.randint(0, self._genome_size - 2)
             file_idx_2  = file_idx_1 + 1
@@ -56,7 +56,7 @@ class SwapRandom(MutStrategy):
         self._genome_size = genome_size
 
     def compute(self, offset: list) -> list:
-        for _ in range(len(offset) * self._rate):
+        for _ in range(int(len(offset) * self._rate)):
             chromosome  = offset.pop()
             file_idx_1  = random.randint(0, self._genome_size // 2)
             file_idx_2  = random.randint(self._genome_size // 2 + 1, self._genome_size - 1)
@@ -76,7 +76,7 @@ class Greedy(MutStrategy):
         self._genome_size = genome_size
 
     def compute(self, offset: list) -> list:
-        for _ in range(len(offset) * self._rate):
+        for _ in range(int(len(offset) * self._rate)):
             chromosome  = offset.pop()
             queen_sq = self._greediest_queen(chromosome)
             sq_file, new_square = self._compute_new_position(queen_sq)
@@ -102,6 +102,6 @@ class Greedy(MutStrategy):
     def _compute_new_position(self, square: int) -> tuple:
         sq_file = file_idx(square, self._genome_size)
         squares = FILE_SQUARE_LUT[sq_file]
-        squares.remove(square)
+        # squares.remove(square)
         new_square = random.choice(squares)
         return sq_file, new_square
