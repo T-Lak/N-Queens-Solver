@@ -1,3 +1,4 @@
+import copy
 import random
 from abc import ABC, abstractmethod
 
@@ -7,9 +8,21 @@ from Utilities.lookup_tables import FILE_MASK_LUT
 
 class XStrategy(ABC):
 
+    def __init__(self, chrom_size, rate=.8) -> None:
+        self._chrom_size = chrom_size
+        self._rate = rate
+
     @abstractmethod
     def compute(self, parents: list, breed_limit: int) -> list:
         pass
+
+    @property
+    def rate(self):
+        return self._rate
+
+    @rate.setter
+    def rate(self, value):
+        self._rate = value
 
 
 class CrossoverContext:
@@ -32,18 +45,19 @@ class CrossoverContext:
 class SinglePoint(XStrategy):
 
     def __init__(self, chrom_size, rate=.8) -> None:
-        self._chrom_size = chrom_size
-        self._rate = rate
+        super().__init__(chrom_size, rate)
 
     def compute(self, parents: list, breed_limit: int) -> list:
+        p = set()
+        p.update([g.chromosome for g in parents])
         offset = []
         while len(offset) < 100 * self._rate:
             x_point = random.randint(1, self._chrom_size)
             left_mask = masked_west_files(x_point, self._chrom_size)
             right_mask = invert(left_mask, self._chrom_size)
-            parent_1, parent_2 = random.sample(parents, 2)
-            child_1 = (parent_1.chromosome & left_mask) | (parent_2.chromosome & right_mask)
-            child_2 = (parent_2.chromosome & left_mask) | (parent_1.chromosome & right_mask)
+            parent_1, parent_2 = random.sample(p, 2)
+            child_1 = (parent_1 & left_mask) | (parent_2 & right_mask)
+            child_2 = (parent_2 & left_mask) | (parent_1 & right_mask)
             offset.extend([child_1, child_2])
         return offset
 
@@ -51,24 +65,24 @@ class SinglePoint(XStrategy):
 class TwoPoint(XStrategy):
 
     def __init__(self, chrom_size, rate=.8) -> None:
-        self._chrom_size = chrom_size
-        self._rate = rate
+        super().__init__(chrom_size, rate)
 
     def compute(self, parents: list, breed_limit: int) -> list:
+        p = [g.chromosome for g in parents]
         offset = []
-        while len(offset) < 100 * self._rate:
+        while len(offset) < int(100 * self._rate):
             child_1,  child_2  = ZERO, ZERO
-            parent_1, parent_2 = random.sample(parents, 2)
+            parent_1, parent_2 = random.sample(p, 2)
             start = random.randint(1, self._chrom_size // 2)
             end   = random.randint(start + 1, self._chrom_size - 1)
             for file in range(self._chrom_size):
                 file_mask = FILE_MASK_LUT[file]
                 if file < start or file > end:
-                    child_1 |= parent_1.chromosome & file_mask
-                    child_2 |= parent_2.chromosome & file_mask
+                    child_1 |= parent_1 & file_mask
+                    child_2 |= parent_2 & file_mask
                 else:
-                    child_1 |= parent_2.chromosome & file_mask
-                    child_2 |= parent_1.chromosome & file_mask
+                    child_1 |= parent_2 & file_mask
+                    child_2 |= parent_1 & file_mask
             offset.extend([child_1, child_2])
         return offset
 
@@ -76,8 +90,7 @@ class TwoPoint(XStrategy):
 class Uniform(XStrategy):
 
     def __init__(self, chrom_size, rate=.8) -> None:
-        self._chrom_size = chrom_size
-        self._rate = rate
+        super().__init__(chrom_size, rate)
 
     def compute(self, parents: list, breed_limit: int) -> list:
         offset = []
@@ -94,4 +107,23 @@ class Uniform(XStrategy):
                     child_1 |= parent_1.chromosome & file_mask
                     child_2 |= parent_2.chromosome & file_mask
             offset.extend([child_1, child_2])
+        return offset
+
+
+class Shuffle(XStrategy):
+
+    def __init__(self, chrom_size, rate=.8) -> None:
+        super().__init__(chrom_size, rate)
+
+    def compute(self, parents: list, breed_limit: int) -> list:
+        offset = []
+        p = [g.chromosome for g in parents]
+        while len(offset) < 100 * self._rate:
+            parent = random.choice(p)
+            files = [parent & FILE_MASK_LUT[i] for i in range(self._chrom_size)]
+            random.shuffle(files)
+            child = ZERO
+            for _, file in enumerate(files):
+                child |= file
+            offset.append(child)
         return offset

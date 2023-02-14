@@ -32,7 +32,7 @@ class Population:
     @genomes.setter
     def genomes(self, value: list) -> None:
         # [self.replace(Genome(chromosome, 8)) for chromosome in value]
-        self._genomes = value + self.n_random_genomes(self.size - len(value))
+        self._genomes = value + self.n_random_genomes(self.size - len(value) - 1) + [self.fittest()]
         self._order()
 
     @property
@@ -57,6 +57,6 @@ class Population:
     def n_random_genomes(self, n: int) -> list:
         return random.sample(self._genomes, n)
 
-    def replace(self, genome: Genome):
-        self._genomes.remove(self.random_genome())
-        bisect.insort(self._genomes, genome)
+    def replace(self, old: Genome, new: Genome):
+        self._genomes.remove(old)
+        bisect.insort(self._genomes, new)

@@ -1,3 +1,5 @@
+import copy
+
 import numpy as np
 from abc import ABC, abstractmethod
 
@@ -36,10 +38,12 @@ class Tournament(SelStrategy):
 
     def compute(self, population: Population) -> list:
         selection = []
+        pop = copy.deepcopy(population)
         while len(selection) < population.size * self._rate:
-            candidates = population.n_random_genomes(self._n)
+            candidates = pop.n_random_genomes(self._n)
             candidates.sort(key=lambda g: g.fitness)
             selection.append(candidates[-1])
+            pop.genomes.remove(candidates[-1])
         return selection
 
 
@@ -49,12 +53,12 @@ class RouletteWheel(SelStrategy):
         self._rate = rate
 
     def compute(self, population: Population) -> list:
-        selection = []
+        selection = set()
         probabilities = [g.fitness / population.total_fitness() for g in population.genomes]
         while len(selection) < population.size * self._rate:
             genome = np.random.choice(population.genomes, p=probabilities)
-            selection.append(genome)
-        return selection
+            selection.add(genome)
+        return list(selection)
 
 
 class RankBased(SelStrategy):
@@ -63,8 +67,8 @@ class RankBased(SelStrategy):
         self._rate = rate
 
     def compute(self, population: Population) -> list:
-        selection = []
-        probabilities = [(idx + 1) // population.size for idx, _ in enumerate(population.genomes)]
+        selection = set()
         while len(selection) < population.size * self._rate:
-            selection.append(np.random.choice(population.genomes, p=probabilities))
-        return selection
+            probabilities = [(idx + 1) // population.size for idx, _ in enumerate(population.genomes)]
+            selection.add(np.random.choice(population.genomes, p=probabilities))
+        return list(selection)

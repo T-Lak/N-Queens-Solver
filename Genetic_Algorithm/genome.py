@@ -1,5 +1,4 @@
 from Utilities.bit_masks import BIT
-from Utilities.board_utils import to_binary_string
 from Utilities.lookup_tables import ATTACK_LUT
 
 

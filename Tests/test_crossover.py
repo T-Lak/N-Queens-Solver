@@ -1,19 +1,22 @@
 import unittest
 
 from Genetic_Algorithm.Operators.crossover import *
-from Utilities.lookup_tables import FILE_SQUARE_LUT, create_file_square_lut, create_file_masks
+from Genetic_Algorithm.genome import Genome
+from Utilities.lookup_tables import FILE_SQUARE_LUT, create_file_square_lut, create_file_masks, create_attack_lut
 
 
 class CrossoverTest(unittest.TestCase):
 
     def test_single_point_crossover_8x8(self):
         n = 8
+        create_attack_lut(n)
         create_file_masks(n)
         create_file_square_lut(n)
         parents = create_parents(n)
+        p = [Genome(parents[0], n), Genome(parents[1], n)]
 
         context = CrossoverContext(SinglePoint(8))
-        children = context.execute(parents, 2)
+        children = context.execute(p, 2)
 
         c1_p1 = children[0] & parents[0]
         c2_p1 = children[1] & parents[0]
