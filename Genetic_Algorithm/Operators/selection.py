@@ -38,12 +38,12 @@ class Tournament(SelStrategy):
 
     def compute(self, population: Population) -> list:
         selection = []
-        pop = copy.deepcopy(population)
+        p_copy = copy.deepcopy(population)
         while len(selection) < population.size * self._rate:
-            candidates = pop.n_random_genomes(self._n)
+            candidates = p_copy.n_random_genomes(self._n)
             candidates.sort(key=lambda g: g.fitness)
             selection.append(candidates[-1])
-            pop.genomes.remove(candidates[-1])
+            p_copy.genomes.remove(candidates[-1])
         return selection
 
 
@@ -53,12 +53,9 @@ class RouletteWheel(SelStrategy):
         self._rate = rate
 
     def compute(self, population: Population) -> list:
-        selection = set()
         probabilities = [g.fitness / population.total_fitness() for g in population.genomes]
-        while len(selection) < population.size * self._rate:
-            genome = np.random.choice(population.genomes, p=probabilities)
-            selection.add(genome)
-        return list(selection)
+        selection = np.random.choice(population.genomes, size=int(population.size * self._rate), p=probabilities)
+        return selection
 
 
 class RankBased(SelStrategy):
@@ -67,8 +64,6 @@ class RankBased(SelStrategy):
         self._rate = rate
 
     def compute(self, population: Population) -> list:
-        selection = set()
-        while len(selection) < population.size * self._rate:
-            probabilities = [(idx + 1) // population.size for idx, _ in enumerate(population.genomes)]
-            selection.add(np.random.choice(population.genomes, p=probabilities))
-        return list(selection)
+        probabilities = [(idx + 1) / population.size for idx, _ in enumerate(population.genomes)]
+        selection = np.random.choice(population.genomes, size=int(population.size * self._rate), p=probabilities)
+        return selection

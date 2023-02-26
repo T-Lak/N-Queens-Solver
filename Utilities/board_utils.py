@@ -1,27 +1,41 @@
 import math
 from textwrap import wrap
 
-from Utilities.bit_masks import ZERO
+from Utilities.bit_masks import ZERO, BIT
 
 
-def rank_idx(square: int, n: int):
+def rank_idx(_square: int, n: int):
     """
     Calculates the square's rank (row) of any given board size.
-    :param square: int that represents the square
+    :param _square: int that represents the square
     :param n: board width
     :return: rank/row of the square
     """
-    return square // n
+    return _square // n
 
 
-def file_idx(square: int, n: int):
+def file_idx(_square: int, n: int):
     """
     Calculates the square's file (column) of any given board size.
-    :param square: int that represents the square
+    :param _square: int that represents the square
     :param n: board width
     :return: file/column of the square
     """
-    return square % n
+    return _square % n
+
+
+def count_bits_set(bitboard: int) -> int:
+    return bin(bitboard).count("1")
+
+
+def board_without_square(_square: int, bb: int) -> int:
+    return bb ^ (BIT << _square)
+
+
+def square(file: int, n: int) -> int:
+    _file_idx = file_idx(file, n)
+    _rank_idx = rank_idx(file, n)
+    return 0
 
 
 def bit_scan_forward(bitboard: int) -> list:
@@ -77,4 +91,16 @@ def to_binary_string(bitboard: int, n: int) -> str:
     :return: bitboard as binary string
     """
     binary_repr = f'{{:0{n**2}b}}'
-    return binary_repr.format(bitboard).replace('0', '.').replace('1', 'Q')
+    return binary_repr.format(bitboard)
+
+
+def bitboard_repr(bitboard: int, n: int) -> str:
+    """
+    Transforms a bitboard from int to a binary string. The format
+    is given by the bitboard's number of fields (n * n).
+    :param bitboard: bitboard to transform
+    :param n: board width
+    :return: bitboard as binary string
+    """
+    binary_repr = f'{{:0{n**2}b}}'
+    return binary_repr.format(bitboard).replace('0', '_').replace('1', 'Q')

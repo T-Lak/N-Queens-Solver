@@ -4,11 +4,11 @@ from Utilities.lookup_tables import ATTACK_LUT
 
 class Genome:
 
-    def __init__(self, chromosome, size):
+    def __init__(self, chromosome, chrom_size):
         self._chromosome = chromosome
-        self._size = size
+        self._size = chrom_size
         self._fitness = 0
-        self._ideal_fitness = size * (size - 1) // 2
+        self._ideal_fitness = chrom_size * (chrom_size - 1) // 2
         self.eval_fitness()
 
     def __repr__(self) -> str:
@@ -21,6 +21,10 @@ class Genome:
     @property
     def fitness(self) -> int:
         return self._fitness
+
+    @property
+    def ideal_fitness(self):
+        return self._ideal_fitness
 
     @property
     def size(self) -> int:

@@ -1,5 +1,6 @@
 import unittest
 
+from Genetic_Algorithm.chromosome import Chromosome
 from Genetic_Algorithm.genome import Genome
 from Utilities.lookup_tables import create_attack_lut
 
@@ -28,6 +29,15 @@ class GeneticAlgorithmTest(unittest.TestCase):
         self.assertEqual(genome_2.fitness, ideal_fitness - 1)
         self.assertEqual(genome_3.fitness, ideal_fitness - 3)
         self.assertEqual(genome_4.fitness, ideal_fitness)
+
+    def test_chromosome_class(self):
+        n = 8
+        create_attack_lut(n)
+
+        sequence_1 = 0x4000000000000081
+        chromosome = Chromosome(sequence_1, n)
+        print(chromosome.genes)
+        self.assertEqual([0, 7, 62], chromosome.genes)
 
 
 if __name__ == '__main__':

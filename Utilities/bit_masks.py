@@ -62,8 +62,6 @@ def masked_west_files(rank_idx: int, n: int) -> int:
 
 def invert(bitboard: int, n: int):
     return bitboard ^ (2**(n*n) - 1)
-    # mask = create_one_mask(n)
-    # return bitboard ^ mask
 
 
 def create_south_west_mask(n: int) -> int:

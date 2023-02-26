@@ -48,18 +48,17 @@ class SinglePoint(XStrategy):
         super().__init__(chrom_size, rate)
 
     def compute(self, parents: list, breed_limit: int) -> list:
-        p = set()
-        p.update([g.chromosome for g in parents])
-        offset = []
-        while len(offset) < 100 * self._rate:
+        p = [g.chromosome for g in parents]
+        offspring = []
+        while len(offspring) < int(breed_limit * self._rate):
             x_point = random.randint(1, self._chrom_size)
             left_mask = masked_west_files(x_point, self._chrom_size)
             right_mask = invert(left_mask, self._chrom_size)
             parent_1, parent_2 = random.sample(p, 2)
             child_1 = (parent_1 & left_mask) | (parent_2 & right_mask)
             child_2 = (parent_2 & left_mask) | (parent_1 & right_mask)
-            offset.extend([child_1, child_2])
-        return offset
+            offspring += [child_1, child_2]
+        return offspring
 
 
 class TwoPoint(XStrategy):
@@ -69,8 +68,8 @@ class TwoPoint(XStrategy):
 
     def compute(self, parents: list, breed_limit: int) -> list:
         p = [g.chromosome for g in parents]
-        offset = []
-        while len(offset) < int(100 * self._rate):
+        offspring = []
+        while len(offspring) < int(breed_limit * self._rate):
             child_1,  child_2  = ZERO, ZERO
             parent_1, parent_2 = random.sample(p, 2)
             start = random.randint(1, self._chrom_size // 2)
@@ -83,8 +82,8 @@ class TwoPoint(XStrategy):
                 else:
                     child_1 |= parent_2 & file_mask
                     child_2 |= parent_1 & file_mask
-            offset.extend([child_1, child_2])
-        return offset
+            offspring.extend([child_1, child_2])
+        return offspring
 
 
 class Uniform(XStrategy):
@@ -93,8 +92,8 @@ class Uniform(XStrategy):
         super().__init__(chrom_size, rate)
 
     def compute(self, parents: list, breed_limit: int) -> list:
-        offset = []
-        while len(offset) < 100 * self._rate:
+        offspring = []
+        while len(offspring) < int(breed_limit * self._rate):
             child_1,  child_2  = ZERO, ZERO
             parent_1, parent_2 = random.sample(parents, 2)
             for file in range(self._chrom_size):
@@ -106,8 +105,8 @@ class Uniform(XStrategy):
                 else:
                     child_1 |= parent_1.chromosome & file_mask
                     child_2 |= parent_2.chromosome & file_mask
-            offset.extend([child_1, child_2])
-        return offset
+            offspring.extend([child_1, child_2])
+        return offspring
 
 
 class Shuffle(XStrategy):

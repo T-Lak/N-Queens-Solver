@@ -1,3 +1,4 @@
+import bisect
 import copy
 
 from Genetic_Algorithm.Operators.crossover import *
@@ -6,7 +7,6 @@ from Genetic_Algorithm.Operators.mutation import *
 from Genetic_Algorithm.Operators.selection import *
 from Genetic_Algorithm.genome import Genome
 from Genetic_Algorithm.population import Population
-from Utilities.board_utils import to_binary_string, display
 from Utilities.ga_utils import derive_solutions_from
 from Utilities.lookup_tables import ALL_SOLUTIONS_LUT
 
@@ -15,52 +15,67 @@ class GeneticAlgorithm:
 
     def __init__(self, pop_size: int, chrom_size: int):
         self._population    = Population(pop_size)
+        self._population.populate(chrom_size)
         self._history       = [copy.deepcopy(self.population)]
         self._sel_context   = SelectionContext(RouletteWheel(.2))
-        self._x_context     = CrossoverContext(TwoPoint(chrom_size, .75))
+        self._x_context     = CrossoverContext(SinglePoint(chrom_size, .75))
         self._mut_context   = MutationContext(SwapRandom(.01, chrom_size))
-        self._min_conflicts = MinConflicts(.97, chrom_size)
+        self._min_conflicts = MinConflicts(.5, chrom_size, chrom_size)
         self._ideal_fitness = chrom_size * (chrom_size - 1) // 2
         self._chrom_size    = chrom_size
         self._pop_size      = pop_size
-        self._rate          = 20
+        self._unique_sols   = 0
+        self._generations   = 1
+        self._stagnation_count = 0
+        self._stagnation_limit = 250
+        self._stopping_cause = ""
+        self._cur_num_sols = 0
+        self._new_sol_found = False
         self._solutions     = set()
-        self._population.populate(chrom_size)
 
     def run(self):
-        generations = 0
-        while not self._solution_found():
-        # while len(self._solutions) != ALL_SOLUTIONS_LUT[self._chrom_size]:
-            parents = self._sel_context.execute(self._population)
-            offset  = self._x_context.execute(parents, self._pop_size)
-            offset  = self._mut_context.execute(offset)
-            # offset  = self._min_conflicts.execute(offset)
+        while len(self._solutions) != ALL_SOLUTIONS_LUT[self._chrom_size] and not self._is_converged():
+            parents    = self._sel_context.execute(self._population)
+            offspring  = self._x_context.execute(parents, self._pop_size)
+            offspring  = self._mut_context.execute(offspring)
+            offspring  = self._min_conflicts.execute(offspring)
             genomes = []
-            for chromosome in offset:
+            for chromosome in offspring:
                 genome = Genome(chromosome, self._chrom_size)
-                genomes.append(genome)
+                bisect.insort(genomes, genome)
                 if genome.fitness == self._ideal_fitness and genome.chromosome not in self._solutions:
                     self._solutions.update(derive_solutions_from(chromosome, self._chrom_size))
+                    self._unique_sols += 1
+
+            [bisect.insort(genomes, g) for g in parents[:self._pop_size - len(genomes)]]
+
             self._population.genomes = genomes
-            print(len(self._solutions), [g.fitness for g in self._population.n_fittest(10)])
-            generations += 1
-            if self._is_converged():
-                self._x_context.strategy = Shuffle(self._chrom_size, .75)
-                self.mutation_context.strategy.rate = .05
-            else:
-                self._x_context.strategy = TwoPoint(self._chrom_size, .75)
-                self.mutation_context.strategy.rate = .01
+            self._generations += 1
             self._history.append(copy.deepcopy(self._population))
-        [display(to_binary_string(bb, self._chrom_size)) for bb in self._solutions]
-        print(generations)
+
+            if self._cur_num_sols != len(self._solutions):
+                self._cur_num_sols = len(self._solutions)
+                self._new_sol_found = True
+            else:
+                self._new_sol_found = False
 
     def _solution_found(self) -> bool:
-        return self._population.fittest().fitness == self._ideal_fitness
+        if self._population.fittest().fitness == self._ideal_fitness:
+            self._stopping_cause = "optimum found"
+            return True
+        return False
 
     def _is_converged(self):
-        cur_fitness    = self._population.total_fitness()
-        last_fitness   = self._history[-1].total_fitness()
-        return (cur_fitness - ((cur_fitness + last_fitness) / 2)) <= 20
+        if len(self._history) < 3:
+            return False
+        if not self._new_sol_found:
+            self._stagnation_count += 1
+            if self._stagnation_count == self._stagnation_limit:
+                self._stopping_cause = "converged"
+                return True
+        else:
+            self._stagnation_count = 0
+        return False
 
     @property
     def population(self) -> Population:
@@ -77,3 +92,39 @@ class GeneticAlgorithm:
     @property
     def mutation_context(self):
         return self._mut_context
+
+    @property
+    def min_conflicts(self):
+        return self._min_conflicts
+
+    @min_conflicts.setter
+    def min_conflicts(self, value):
+        self._min_conflicts = value
+
+    @property
+    def stagnation_limit(self):
+        return self._stagnation_limit
+
+    @property
+    def stagnation_count(self):
+        return self._stagnation_count
+
+    @property
+    def generations(self):
+        return self._generations
+
+    @property
+    def stopping_cause(self):
+        return self._stopping_cause
+
+    @property
+    def history(self):
+        return self._history
+
+    @property
+    def unique_sols(self):
+        return self._unique_sols
+
+    @property
+    def solutions(self):
+        return self._solutions

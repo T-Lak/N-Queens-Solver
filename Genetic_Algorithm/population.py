@@ -12,18 +12,28 @@ class Population:
         self._genomes = [] if genomes is None else genomes
         self._size = size
 
-    def populate(self, genome_size: int) -> None:
+    def populate(self, chrom_size: int) -> None:
         for _ in range(self.size):
             bitboard = ZERO
-            for i in range(genome_size):
+            for i in range(chrom_size):
                 squares   = FILE_SQUARE_LUT.get(i)
                 square    = random.choice(squares)
                 bitboard |= BIT << square
-            self.genomes.append(Genome(bitboard, genome_size))
+            self.genomes.append(Genome(bitboard, chrom_size))
         self._order()
 
     def _order(self):
         self._genomes.sort(key=lambda g: g.fitness)
+
+    def contains_sub_optimal_solution(self) -> bool:
+        return True if next(
+            (genome.fitness for genome in self._genomes if genome.fitness == genome.ideal_fitness - 1), None
+        ) else False
+
+    def contains_optimal_solution(self) -> bool:
+        return True if next(
+            (genome.fitness for genome in self._genomes if genome.fitness == genome.ideal_fitness), None
+        ) else False
 
     @property
     def genomes(self) -> list:
@@ -31,9 +41,9 @@ class Population:
 
     @genomes.setter
     def genomes(self, value: list) -> None:
-        # [self.replace(Genome(chromosome, 8)) for chromosome in value]
-        self._genomes = value + self.n_random_genomes(self.size - len(value) - 1) + [self.fittest()]
-        self._order()
+        self._genomes = value
+        if len(self._genomes) < self._size:
+            [bisect.insort(self._genomes, g) for g in self.n_random_genomes(self._size - len(self._genomes))]
 
     @property
     def size(self) -> int:
@@ -60,3 +70,4 @@ class Population:
     def replace(self, old: Genome, new: Genome):
         self._genomes.remove(old)
         bisect.insort(self._genomes, new)
+

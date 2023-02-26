@@ -20,7 +20,7 @@ ALL_SOLUTIONS_LUT = {
     10: 724,
     11: 2680,
     12: 14200,
-    13: 73712,
+    13: 73732,
 }
 
 
@@ -55,16 +55,16 @@ def create_attack_lut(n: int) -> None:
         south_east_ray = (south_east_mask >> (n ** 2 - 1 - square)) & ~masked_west_files(_file_idx, n)
         south_west_ray = south_west_mask  >> (n ** 2 - 1 - square) & masked_west_files(_file_idx, n)
 
-        attack_bitboard = north_ray | \
-                          north_east_ray | \
-                          east_ray | \
-                          south_east_ray | \
-                          south_ray | \
-                          south_west_ray | \
-                          west_ray | \
-                          north_west_ray
+        attack_bb = north_ray | \
+                    north_east_ray | \
+                    east_ray | \
+                    south_east_ray | \
+                    south_ray | \
+                    south_west_ray | \
+                    west_ray | \
+                    north_west_ray
 
-        ATTACK_LUT.append(attack_bitboard & nxn_mask)
+        ATTACK_LUT.append(attack_bb & nxn_mask)
 
 
 def create_file_masks(n: int) -> None:
@@ -140,3 +140,7 @@ def mirror_vertically(bitboard: int, n: int) -> int:
         new_square = (n - 1) - _rank_idx
         bb |= (bitboard & RANK_MASK_LUT[_rank_idx]) >> (n * (_rank_idx - new_square))
     return bb
+
+
+def attack_bitboard(square: int, bitboard: int) -> int:
+    return ATTACK_LUT[square] & bitboard

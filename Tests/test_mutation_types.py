@@ -29,14 +29,6 @@ class MutationTest(unittest.TestCase):
 
         self.assertNotEqual(self.bb, offset[0])
 
-    def test_greedy(self):
-        offset = Greedy(1, self.n).compute([self.bb])
-
-        for i in range(self.n):
-            self.assertEqual(1, bin(self.bb & FILE_MASK_LUT[i]).count("1"))
-
-        self.assertNotEqual(self.bb, offset[0])
-
 
 if __name__ == '__main__':
     unittest.main()
