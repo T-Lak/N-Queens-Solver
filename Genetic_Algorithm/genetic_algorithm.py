@@ -52,6 +52,7 @@ class GeneticAlgorithm:
             self._population.genomes = genomes
             self._generations += 1
             self._history.append(copy.deepcopy(self._population))
+            print(len(self._solutions))
 
             if self._cur_num_sols != len(self._solutions):
                 self._cur_num_sols = len(self._solutions)
