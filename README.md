@@ -48,4 +48,9 @@ python n_queens_ga.py --n 8 --population 200 --generations 250
 - 📌 Applying the approach to other combinatorial optimization problems.
 
 ---
-✨ **Contributions welcome!** Feel free to fork and enhance this project.
+✨ **Contributions welcome!** Feel free to fork and enhance this project.  
+
+---
+
+## License
+This project is licensed under the MIT License.
