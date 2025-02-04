@@ -10,7 +10,7 @@ instead of arrays for representing chessboards, enabling efficient computations 
 - **🔄 Mutation:** Swap Random (SR) & Swap Neighbor (SN) mutations.
 - **📊 Fitness Function:** Based on the number of conflicts between queens.
 - **🧩 Min-Conflicts:** to guide solutions towards feasibility.
-- **Bitboard Representation:** for highly efficient board state manipulation
+- **♟️ Bitboard Representation:** for highly efficient board state manipulation
 
 ## Methodology
 The algorithm follows these steps:
