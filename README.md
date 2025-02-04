@@ -15,12 +15,12 @@ instead of arrays for representing chessboards, enabling efficient computations 
 ## Methodology
 The algorithm follows these steps:
 
-1. Chromosome Representation: Boards are encoded using bitboards, allowing rapid conflict detection and manipulation through bitwise operations.
-2. Selection Methods: Tournament Selection (10% pool) and Roulette-Wheel Selection (20% rate)
-3. Crossover: One-Point and Two-Point crossover (90% probability)
-4. Mutation: Swap-based mutation (3% probability)
-5. Min-Conflicts Application: Applied with a probability of 10% per selected chromosome
-6. Termination Criteria: Solution found or maximum of 250 generations reached
+1. **Chromosome Representation:** Boards are encoded using bitboards, allowing rapid conflict detection and manipulation through bitwise operations.
+2. **Selection Methods:** Tournament Selection (10% pool) and Roulette-Wheel Selection (20% rate)
+3. **Crossover:** One-Point and Two-Point crossover (90% probability)
+4. **Mutation:** Swap-based mutation (3% probability)
+5. **Min-Conflicts Application:** Applied with a probability of 10% per selected chromosome
+6. **Termination Criteria:** Solution found or maximum of 250 generations reached
 
 ## Experimental Results
 
