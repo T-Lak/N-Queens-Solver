@@ -40,7 +40,7 @@ python n_queens_ga.py --n 8 --population 200 --generations 250
 - NumPy
 
 ## Future Improvements
-- ⚙️ Fine-tuning Min-Conflicts probability for optimal performance.
+- ⚙️ Fine-tuning Parameters - experiment with adaptive selection/mutation rates.
 - 🔄 Exploring alternative selection and mutation strategies.
 - 📌 Applying the approach to other combinatorial optimization problems.
 
