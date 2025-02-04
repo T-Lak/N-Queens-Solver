@@ -26,9 +26,12 @@ The algorithm follows these steps:
 
 Three experimental phases were conducted:
 
-- **Phase 1 - Evaluation of different GA configurations on n=8:** Results showed that Tournament Selection and Two-Point Crossover yielded the best performance. Min-Conflicts significantly improved success rates, achieving up to 100% success rate in some configurations.
-- **Phase 2 - Testing the hybrid approach on larger board sizes (n=10, 20, 30, 40, 50):** The bitboard-based representation allowed the algorithm to scale efficiently, consistently finding solutions in fewer than 5 generations for all tested board sizes.
-- **Phase 3 - Assessing the ability to find all possible solutions for n=8–11:** Results indicated that Roulette-Wheel Selection consistently found 100% of all possible solutions, while Tournament Selection was slightly less consistent for larger n.
+- **Phase 1 - Evaluation of different GA configurations on n=8:**  
+Results showed that Tournament Selection and Two-Point Crossover yielded the best performance. Min-Conflicts significantly improved success rates, achieving up to 100% success rate in some configurations.
+- **Phase 2 - Testing the hybrid approach on larger board sizes (n=10, 20, 30, 40, 50):**  
+The bitboard-based representation allowed the algorithm to scale efficiently, consistently finding solutions in fewer than 5 generations for all tested board sizes.
+- **Phase 3 - Assessing the ability to find all possible solutions for n=8–11:**  
+Results indicated that Roulette-Wheel Selection consistently found 100% of all possible solutions, while Tournament Selection was slightly less consistent for larger n.
 
 ## Usage
 ```bash
