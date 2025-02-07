@@ -10,17 +10,24 @@ instead of arrays for representing chessboards, enabling efficient computations 
 - **🔄 Mutation:** Swap Random (SR) & Swap Neighbor (SN) mutations.
 - **📊 Fitness Function:** Based on the number of conflicts between queens.
 - **🧩 Min-Conflicts:** to guide solutions towards feasibility.
-- **♟️ Bitboard Representation:** for highly efficient board state manipulation
 
-## Methodology
-The algorithm follows these steps:
+## Algorithm Workflow
+The hybrid approach combines a **Genetic Algorithm (GA)** with the **Min-Conflicts heuristic** to iteratively refine solutions for the N-Queens problem. The process consists of the following steps:
 
-1. **Chromosome Representation:** Boards are encoded using bitboards, allowing rapid conflict detection and manipulation through bitwise operations.
-2. **Selection Methods:** Tournament Selection (10% pool) and Roulette-Wheel Selection (20% rate)
-3. **Crossover:** One-Point and Two-Point crossover (90% probability)
-4. **Mutation:** Swap-based mutation (3% probability)
-5. **Min-Conflicts Application:** Applied with a probability of 10% per selected chromosome
-6. **Termination Criteria:** Solution found or maximum of 250 generations reached
+1. **Initialization:**
+   - Generate an initial population of random board configurations.
+   - Each board is represented as a bitboard, enabling fast state manipulation.
+3. **Selection:**
+    - Choose parents for the next generation using **Tournament Selection (10% pool) or Roulette-Wheel Selection (20% rate)**.
+4. **Crossover:**
+   - Apply **One-Point (90% probability)** or **Two-Point crossover**, exchanging partial board states between parents.
+5. **Mutation:**
+   - Introduce diversity using **Swap Random (SR)** or **Swap Neighbor (SN)** mutations, occurring with a **3% probability**.
+6. **Conflict Reduction (Min-Conflicts Heuristic):**
+    - With a **10% probability**, the algorithm applies **Min-Conflicts** to adjust queen positions toward a conflict-free solution.
+7. **Termination:**
+    - A valid solution (conflict-free board) is found.
+    - The maximum limit of **250 generations** is reached.
 
 ## Experimental Results
 
