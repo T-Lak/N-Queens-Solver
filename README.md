@@ -9,7 +9,7 @@ instead of arrays for representing chessboards, enabling efficient computations 
 - **🔀 Crossover:** One-Point (OP) & Two-Point (TP) crossover.
 - **🔄 Mutation:** Swap Random (SR) & Swap Neighbor (SN) mutations.
 - **📊 Fitness Function:** Based on the number of conflicts between queens.
-- **🧩 Min-Conflicts:** to guide solutions towards feasibility.
+- **🧩 Min-Conflicts:** To guide solutions towards feasibility.
 
 ## Algorithm Workflow
 The hybrid approach combines a **Genetic Algorithm (GA)** with the **Min-Conflicts heuristic** to iteratively refine solutions for the N-Queens problem. The process consists of the following steps:
