@@ -18,19 +18,19 @@ The hybrid approach combines a **Genetic Algorithm (GA)** with the **Min-Conflic
 Generate an initial population of random board configurations. Each board is represented as a bitboard, enabling fast state manipulation.  
 
 - **Selection:**  
-Choose parents for the next generation using **Tournament Selection (10% pool) or Roulette-Wheel Selection (20% rate)**.  
+Choose parents for the next generation using **`Tournament Selection (10% pool)`** or **`Roulette-Wheel Selection (20% rate)`**.  
 
 - **Crossover:**  
-Apply **One-Point (90% probability)** or **Two-Point crossover**, exchanging partial board states between parents.  
+Apply **`One-Point (90% probability)`** or **`Two-Point crossover`**, exchanging partial board states between parents.  
 
 - **Mutation:**  
-Introduce diversity using **Swap Random (SR)** or **Swap Neighbor (SN)** mutations, occurring with a **3% probability**.  
+Introduce diversity using **`Swap Random (SR)`** or **`Swap Neighbor (SN)`** mutations, occurring with a **`3% probability`**.  
 
 - **Conflict Reduction (Min-Conflicts Heuristic):**  
-With a **10% probability**, the algorithm applies **Min-Conflicts** to adjust queen positions toward a conflict-free solution.  
+With a **`10% probability`**, the algorithm applies **`Min-Conflicts`** to adjust queen positions toward a conflict-free solution.  
 
 - **Termination:**  
-**All valid solutions** (conflict-free board) were found or the maximum limit of **250 generations** is reached.
+**`All valid solutions`** (conflict-free board) were found or the maximum limit of **`250 generations`** is reached.
 
 ## Experimental Results
 
