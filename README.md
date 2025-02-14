@@ -17,15 +17,15 @@ The hybrid approach combines a **Genetic Algorithm (GA)** with the **Min-Conflic
 1. **Initialization:**
    - Generate an initial population of random board configurations.
    - Each board is represented as a bitboard, enabling fast state manipulation.
-3. **Selection:**
+2. **Selection:**
     - Choose parents for the next generation using **Tournament Selection (10% pool) or Roulette-Wheel Selection (20% rate)**.
-4. **Crossover:**
+3. **Crossover:**
    - Apply **One-Point (90% probability)** or **Two-Point crossover**, exchanging partial board states between parents.
-5. **Mutation:**
+4. **Mutation:**
    - Introduce diversity using **Swap Random (SR)** or **Swap Neighbor (SN)** mutations, occurring with a **3% probability**.
-6. **Conflict Reduction (Min-Conflicts Heuristic):**
+5. **Conflict Reduction (Min-Conflicts Heuristic):**
     - With a **10% probability**, the algorithm applies **Min-Conflicts** to adjust queen positions toward a conflict-free solution.
-7. **Termination:**
+6. **Termination:**
     - A valid solution (conflict-free board) is found.
     - The maximum limit of **250 generations** is reached.
 
@@ -40,9 +40,58 @@ The bitboard-based representation allowed the algorithm to scale efficiently, co
 - **Phase 3 - Assessing the ability to find all possible solutions for n=8–11:**  
 Results indicated that Roulette-Wheel Selection consistently found 100% of all possible solutions, while Tournament Selection was slightly less consistent for larger n.
 
-## Usage
+## Installation
+Ensure you have Python installed. Then, create and activate a virtual environment:
 ```bash
-python n_queens_ga.py --n 8 --population 200 --generations 250
+python -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+.venv\Scripts\activate     # Windows
+```
+
+Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+### Optional Parameters
+Customize the algorithm with selection, crossover and mutation strategies:
+
+| Argument         | Type        | Description                                  |
+|-----------------|------------|----------------------------------------------|
+| `--n`          | int        | Size of the chessboard (N-Queens)           |
+| `--population` | int        | Number of individuals in the population      |
+| `--generations`| int        | Number of generations to evolve             |
+| `--TM size prob` | float, float | Tournament selection (size ratio, probability) |
+| `--RW prob`    | float      | Roulette Wheel selection probability        |
+| `--RB prob`    | float      | Rank-based selection probability            |
+| `--OP prob`    | float      | One-point crossover probability             |
+| `--TP prob`    | float      | Two-point crossover probability             |
+| `--SN prob`    | float      | Swap neighbor mutation probability          |
+| `--SR prob`    | float      | Swap random mutation probability            |
+| `--MC prob iter` | float, int | Min-conflicts (probability, max iterations)  |
+
+### Example Usage
+```bash
+python ga_cli.py --n 6 --population 200 --generations 250 --TM 0.2 0.8 --OP 0.9 --SN 0.1
+```
+
+### Printed Results
+```bash
+   _ Q _ _ _ _    _ _ _ _ Q _
+   _ _ _ Q _ _    _ _ Q _ _ _
+   _ _ _ _ _ Q    Q _ _ _ _ _
+   Q _ _ _ _ _    _ _ _ _ _ Q
+   _ _ Q _ _ _    _ _ _ Q _ _
+   _ _ _ _ Q _    _ Q _ _ _ _   ...
+```
+
+## Project Structure
+```plaintext
+│── Genetic_Algorithm   # Core GA classes (e.g., chromosome, population)
+│   │── Operators       # Selection, crossover, mutation strategies
+│── Tests               # Unit tests for correctness
+│── Utilities           # Bitboard representations and helper functions
+│── ga_cli.py
 ```
 
 ## Dependencies
