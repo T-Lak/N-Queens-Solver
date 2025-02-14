@@ -1,5 +1,4 @@
 import bisect
-import copy
 
 from Genetic_Algorithm.Operators.crossover import *
 from Genetic_Algorithm.Operators.min_conflicts import MinConflicts
