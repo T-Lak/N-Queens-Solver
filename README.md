@@ -30,7 +30,7 @@ Introduce diversity using **`Swap Random (SR)`** or **`Swap Neighbor (SN)`** mut
 With a **`10% probability`**, the algorithm applies **`Min-Conflicts`** to adjust queen positions toward a conflict-free solution.  
 
 - **Termination:**  
-**`All valid solutions`** (conflict-free board) were found or the maximum limit of **`250 generations`** is reached.
+**`All valid solutions`** (conflict-free board) were found or the maximum limit of **`n generations`** is reached.
 
 ## Experimental Results
 
