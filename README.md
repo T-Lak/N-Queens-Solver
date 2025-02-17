@@ -1,5 +1,5 @@
 ## Overview
-This project implements a hybrid approach combining a Genetic Algorithm (GA) with the Min-Conflicts heuristic to solve the N-Queens problem efficiently. 
+This project implements a hybrid approach combining a Genetic Algorithm (GA) with the Min-Conflicts heuristic to solve the [**N-Queens Problem**](https://developers.google.com/optimization/cp/queens) efficiently. 
 The implementation is designed for performance optimization, using [bitboards](https://www.chessprogramming.org/Bitboards)
 instead of arrays for representing chessboards, enabling efficient computations via bitwise operations.
 
